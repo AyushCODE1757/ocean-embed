@@ -8,6 +8,11 @@ Generates:
   2. `latitude` (°N)
   3. `sin_doy` = sin(2 * pi * doy / 365.25)
   4. `cos_doy` = cos(2 * pi * doy / 365.25)
+
+Key function `tighten_mask_to_data` post-processes the geometry-derived masks by
+removing any cells that are inside valid_ocean but carry NaN data on every date.
+These are coastal regridding artefacts (cells that barely passed the 0.5 threshold
+but lie in a source-grid land cell). We never silently fill them — we exclude them.
 """
 from datetime import datetime
 from typing import Tuple
@@ -48,6 +53,62 @@ def build_depth_masks_from_bathymetry(
         valid_depth_mask[i] = valid_ocean_mask & (bathymetry_m >= z)
 
     return valid_ocean_mask, valid_depth_mask
+
+
+def tighten_mask_to_data(
+    valid_ocean_mask: np.ndarray,
+    valid_depth_mask: np.ndarray,
+    surface_cube: np.ndarray,
+    target_cube: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Remove cells that are inside the geometry-derived mask but have no valid data.
+
+    Coastal cells that survive the 0.5-threshold regrid step but sit entirely over land
+    in the source grid will be NaN on every date for every variable.  We detect them
+    by asking: does ANY time step have at least one non-NaN surface value at this cell?
+    If not, the cell is excluded from both valid_ocean and valid_depth.
+
+    This is the authoritative mask-tightening step.  It MUST be run after the full
+    surface and target arrays are built, before writing the Zarr stores.
+
+    Args:
+        valid_ocean_mask: 2D bool [lat, lon] from build_depth_masks_from_bathymetry.
+        valid_depth_mask: 3D bool [depth, lat, lon] from build_depth_masks_from_bathymetry.
+        surface_cube: 4D float32 [time, channel, lat, lon] — full harmonized surface inputs.
+        target_cube:  4D float32 [time, depth, lat, lon] — full harmonized targets.
+
+    Returns:
+        (tightened_ocean_mask [lat, lon], tightened_depth_mask [depth, lat, lon])
+    """
+    # A cell has valid surface data if at least 1 time step has ≥1 non-NaN surface channel
+    # surface_cube: [time, channel, lat, lon]
+    # any_surface_valid: [lat, lon]
+    any_surface_valid = np.any(~np.isnan(surface_cube), axis=(0, 1))  # over time & channel
+
+    # A cell has valid target data if at least 1 time step × depth level is non-NaN
+    # target_cube: [time, depth, lat, lon]
+    any_target_valid = np.any(~np.isnan(target_cube), axis=(0, 1))  # over time & depth
+
+    # Combined: must have BOTH surface and target data to be considered ocean
+    data_supported = any_surface_valid & any_target_valid
+
+    n_dropped = int(np.sum(valid_ocean_mask & ~data_supported))
+    if n_dropped > 0:
+        import logging
+        logging.getLogger(__name__).warning(
+            f"tighten_mask_to_data: dropping {n_dropped} cells from valid_ocean_mask "
+            f"that are in the geometry mask but have no data on any date "
+            f"(coastal regridding artefacts)."
+        )
+
+    tight_ocean = valid_ocean_mask & data_supported
+    # Per-depth tightening: a depth level at a cell is valid only if the ocean cell itself
+    # is valid AND at least one time step has non-NaN target at that depth.
+    # target_cube: [time, depth, lat, lon] -> any_target_per_depth: [depth, lat, lon]
+    any_target_per_depth = np.any(~np.isnan(target_cube), axis=0)  # [depth, lat, lon]
+    tight_depth = valid_depth_mask & any_target_per_depth
+
+    return tight_ocean, tight_depth
 
 
 def build_context_channels(

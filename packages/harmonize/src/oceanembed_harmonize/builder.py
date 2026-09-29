@@ -33,7 +33,7 @@ from oceanembed_contracts import (
     validate_target_temp_cube,
 )
 from oceanembed_harmonize.climatology import ClimatologyEngine
-from oceanembed_harmonize.masks import build_context_channels, build_depth_masks_from_bathymetry
+from oceanembed_harmonize.masks import build_context_channels, build_depth_masks_from_bathymetry, tighten_mask_to_data
 from oceanembed_harmonize.qc import generate_qc_report
 from oceanembed_harmonize.regrid import regrid_2d_field, regrid_3d_cube
 from oceanembed_harmonize.vertical import interpolate_cube_vertical_pchip
@@ -130,6 +130,18 @@ class HarmonizePipelineBuilder:
         # Validate cubes against contracts
         validate_surface_input_cube(surface_inputs)
         validate_target_temp_cube(target_temps)
+
+        # Post-step: tighten masks to data (removes coastal regridding artefacts)
+        logger.info("Tightening masks to data support (removing coastal NaN artefacts)...")
+        valid_ocean_mask, valid_depth_mask = tighten_mask_to_data(
+            valid_ocean_mask, valid_depth_mask, surface_inputs, target_temps
+        )
+        # Re-apply tightened masks so cubes don't contain valid-mask cells with NaN
+        for t in range(surface_inputs.shape[0]):
+            for c in range(surface_inputs.shape[1]):
+                surface_inputs[t, c][~valid_ocean_mask] = np.nan
+        for t in range(target_temps.shape[0]):
+            target_temps[t][~valid_depth_mask] = np.nan
 
         # 3. Compute training climatology
         logger.info("Computing day-of-year climatology over training years...")

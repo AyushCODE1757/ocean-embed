@@ -136,27 +136,79 @@ def generate_fixture_target_3d_temp(
     ocean_mask: np.ndarray,
     bathymetry: np.ndarray,
 ) -> np.ndarray:
-    """Generate 3D temperature field [15, 101, 241] adhering to ocean physics (thermocline decay)."""
+    """Generate 3D temperature field [15, 101, 241] with realistic vertical structure.
+
+    Vertical model (from surface downward):
+      - 0 m  : SST (skin, top-of-mixed-layer)
+      - 5 m  : SST - skin_delta   (≈ 0.6 °C diurnal skin cooling removed)
+      - 10 m : SST - skin_delta - ml_rate * 5   (mixed layer lapse ≈ 0.08 °C/m)
+      - 20 m : SST - skin_delta - ml_rate * 15  (still mixed layer but warming from below)
+      - ≥30 m: thermocline exponential decay to deep-ocean temperature (~4.2 °C)
+
+    The gradient across 0–20 m is intentionally ≥ 0.5 °C so that per-depth metrics
+    differ at every level (avoids the "identical RMSE to 4 d.p." artefact).
+
+    NOTE: This fixture stores data **already at the 15 SIH depth levels**, not at
+    native GLORYS levels.  The PCHIP vertical interpolation in `builder.py` is
+    therefore a no-op (source == target depths), which is correct and expected for
+    fixtures.  In the production pipeline the source depths are GLORYS native levels
+    (75 levels) and interpolation is non-trivial.
+
+    Returns:
+        float32 array [15, 101, 241] with NaN on land and below seafloor.
+    """
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    doy = dt.timetuple().tm_yday
+
     lat_grid, lon_grid = get_spatial_grid()
     temp_3d = np.zeros((NUM_DEPTHS, LAT_COUNT, LON_COUNT), dtype=np.float32)
 
-    # Thermocline depth around 80-120m
-    z0 = 100.0 + 20.0 * np.sin(lon_grid / 10.0)
-    # Deep ocean baseline temp (~4.0°C)
+    # Deep-ocean baseline (abyssal temperature)
     t_deep = 4.2
+
+    # Thermocline centre depth: 80–120 m, varies with longitude (eddy-like)
+    z0 = 100.0 + 20.0 * np.sin(lon_grid / 10.0)
+
+    # Seasonal modulation of mixed-layer depth: deeper in winter (NE monsoon)
+    season_ml = np.cos(2 * np.pi * (doy - 135) / 365.25)  # +1 in May, -1 in Nov
+
+    # Diurnal skin cooling below the surface skin layer (~0.4–0.8 °C)
+    # This is the difference between the "bulk SST at 5m" and the skin measurement at 0m
+    skin_delta = 0.55 + 0.15 * season_ml  # [101, 241] ~0.4–0.7 °C
+
+    # Mixed-layer lapse rate (°C / m): ~0.07–0.10 °C per metre in top 30 m
+    ml_rate = 0.075 + 0.02 * np.sin(lat_grid / 8.0)  # [101, 241]
 
     for i, z in enumerate(DEPTH_LEVELS):
         if z == 0.0:
+            # Skin / surface measurement
             temp_z = surface_sst.copy()
-        elif z < 30.0:
-            # Mixed layer: slightly cooler than surface
-            temp_z = surface_sst - 0.015 * z
+
+        elif z <= 5.0:
+            # Below the skin: remove diurnal warming, slightly cooler
+            temp_z = surface_sst - skin_delta
+
+        elif z <= 20.0:
+            # Mixed layer with a modest but real lapse rate
+            # z goes 10 → 20 m; offset from 5 m level
+            temp_z = (surface_sst - skin_delta) - ml_rate * (z - 5.0)
+
+        elif z <= 50.0:
+            # Transition zone: faster cooling approaching thermocline
+            # lapse rate accelerates to ~0.3 °C/m
+            base = (surface_sst - skin_delta) - ml_rate * 15.0  # value at 20 m
+            accel = 0.25 + 0.05 * np.abs(np.sin(lon_grid / 8.0))
+            temp_z = base - accel * (z - 20.0)
+
         else:
-            # Thermocline decay: T(z) = T_deep + (SST - T_deep) / (1 + (z/z0)^1.8)
+            # Below thermocline: PCHIP-like exponential decay
             decay = 1.0 / (1.0 + (z / z0) ** 1.8)
             temp_z = t_deep + (surface_sst - t_deep) * decay
 
-        # Check seafloor depth: if seafloor < depth level, cell is masked
+        # Clamp to physically plausible range [1.5, 33] °C
+        temp_z = np.clip(temp_z, 1.5, 33.0).astype(np.float32)
+
+        # Mask seafloor and land cells
         seafloor_mask = bathymetry < z
         temp_z[seafloor_mask] = np.nan
         temp_z[~ocean_mask] = np.nan
