@@ -1,0 +1,22 @@
+[project]
+name = "oceanembed-workspace"
+version = "0.1.0"
+description = "OceanEmbed Monorepo Workspace"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "contracts/python",
+    "packages/*",
+]
+
+[tool.uv.sources]
+oceanembed-contracts = { workspace = true }
+oceanembed-ingest = { workspace = true }
+oceanembed-harmonize = { workspace = true }
+oceanembed-ml = { workspace = true }
+oceanembed-eval = { workspace = true }
+oceanembed-advisor = { workspace = true }
+oceanembed-serving = { workspace = true }

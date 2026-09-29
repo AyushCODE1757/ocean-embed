@@ -1,0 +1,13 @@
+# OceanEmbed Data Splits Specification Contract
+splits:
+  status: "frozen"
+  train:
+    start_year: 1993
+    end_year: 2018
+  val:
+    start_year: 2019
+    end_year: 2020
+  test:
+    start_year: 2021
+    end_year: 2023
+  temporal_gap_days: 7

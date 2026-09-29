@@ -1,0 +1,12 @@
+# OceanEmbed Grid Specification Contract
+grid:
+  lat_min: 5.0
+  lat_max: 30.0
+  lat_step: 0.25
+  lat_count: 101
+  lon_min: 45.0
+  lon_max: 105.0
+  lon_step: 0.25
+  lon_count: 241
+  crs: "EPSG:4326"
+  region: "North Indian Ocean"

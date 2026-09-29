@@ -1,0 +1,30 @@
+# OceanEmbed Surface Input Channels Contract
+channels:
+  - name: sst
+    long_name: Sea Surface Temperature
+    units: "degC"
+    order: 0
+  - name: sss
+    long_name: Sea Surface Salinity
+    units: "psu"
+    order: 1
+  - name: sla
+    long_name: Sea Level Anomaly
+    units: "m"
+    order: 2
+  - name: ucur
+    long_name: Zonal Surface Current
+    units: "m/s"
+    order: 3
+  - name: vcur
+    long_name: Meridional Surface Current
+    units: "m/s"
+    order: 4
+  - name: uwind
+    long_name: Zonal Surface Wind
+    units: "m/s"
+    order: 5
+  - name: vwind
+    long_name: Meridional Surface Wind
+    units: "m/s"
+    order: 6
