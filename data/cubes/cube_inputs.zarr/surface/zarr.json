@@ -1,6 +1,6 @@
 {
   "shape": [
-    8,
+    131,
     7,
     101,
     241
@@ -10,9 +10,9 @@
     "name": "regular",
     "configuration": {
       "chunk_shape": [
-        4,
-        4,
-        51,
+        33,
+        2,
+        26,
         121
       ]
     }

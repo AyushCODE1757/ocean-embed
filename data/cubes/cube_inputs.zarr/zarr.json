@@ -55,7 +55,7 @@
       },
       "context": {
         "shape": [
-          8,
+          131,
           4,
           101,
           241
@@ -65,10 +65,10 @@
           "name": "regular",
           "configuration": {
             "chunk_shape": [
-              4,
-              2,
+              33,
+              1,
               51,
-              241
+              121
             ]
           }
         },
@@ -247,7 +247,7 @@
       },
       "surface": {
         "shape": [
-          8,
+          131,
           7,
           101,
           241
@@ -257,9 +257,9 @@
           "name": "regular",
           "configuration": {
             "chunk_shape": [
-              4,
-              4,
-              51,
+              33,
+              2,
+              26,
               121
             ]
           }
@@ -301,14 +301,14 @@
       },
       "time": {
         "shape": [
-          8
+          131
         ],
         "data_type": "int64",
         "chunk_grid": {
           "name": "regular",
           "configuration": {
             "chunk_shape": [
-              8
+              131
             ]
           }
         },
@@ -335,7 +335,7 @@
           }
         ],
         "attributes": {
-          "units": "days since 2023-01-15 00:00:00",
+          "units": "days since 2015-04-01 00:00:00",
           "calendar": "proleptic_gregorian"
         },
         "dimension_names": [

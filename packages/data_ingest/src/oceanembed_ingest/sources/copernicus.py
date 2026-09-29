@@ -115,16 +115,21 @@ class CopernicusDownloader(BaseSourceDownloader):
         self,
         start_date: str,
         end_date: str,
+        chunk_mode: str = "monthly",
         **kwargs,
     ) -> List[Path]:
-        """Download Copernicus Marine subset for the NIO domain, day by day.
-
-        Downloads one NetCDF per calendar day so the pipeline can process
-        them incrementally without holding the full range in memory.
+        """Download Copernicus Marine subset for the NIO domain.
 
         Args:
-            start_date: First date to download, 'YYYY-MM-DD'.
-            end_date:   Last date to download,  'YYYY-MM-DD'.
+            start_date:  First date to download, 'YYYY-MM-DD'.
+            end_date:    Last date to download,  'YYYY-MM-DD'.
+            chunk_mode:  How to split the download into files:
+                         - 'monthly'  (default) — 1 NetCDF per calendar month (~450 MB).
+                           Best for production: few files, easy to retry a month.
+                         - 'daily'    — 1 NetCDF per calendar day (~15 MB).
+                           Fine-grained retry, but creates ~3,900 files for 2015-2025.
+                         - 'yearly'   — 1 NetCDF per year (~5.4 GB).
+                           Fewest files; one failure = re-download a whole year.
 
         Returns:
             Sorted list of downloaded NetCDF paths.
@@ -137,38 +142,64 @@ class CopernicusDownloader(BaseSourceDownloader):
                 "Run: pip install copernicusmarine"
             ) from exc
 
-        dates = _date_range(start_date, end_date)
+        if chunk_mode == "monthly":
+            chunks = _month_chunks(start_date, end_date)
+            label = "monthly chunks"
+        elif chunk_mode == "yearly":
+            chunks = _year_chunks(start_date, end_date)
+            label = "yearly chunks"
+        elif chunk_mode == "daily":
+            chunks = [(d, d) for d in _date_range(start_date, end_date)]
+            label = "daily slices"
+        else:
+            raise ValueError(f"chunk_mode must be 'daily', 'monthly', or 'yearly', got '{chunk_mode}'")
+
         logger.info(
-            f"[{self.product_key}] Downloading {len(dates)} daily slices "
+            f"[{self.product_key}] Downloading {len(chunks)} {label} "
             f"({start_date} → {end_date}), "
             f"domain lat=[{LAT_MIN},{LAT_MAX}] lon=[{LON_MIN},{LON_MAX}]"
         )
 
         downloaded: List[Path] = []
-        for date_str in dates:
-            path = self._download_one_day(copernicusmarine, date_str)
+        for chunk_start, chunk_end in chunks:
+            path = self._download_chunk(copernicusmarine, chunk_start, chunk_end, chunk_mode)
             if path is not None:
                 downloaded.append(path)
 
         logger.info(
-            f"[{self.product_key}] Done — {len(downloaded)}/{len(dates)} files downloaded."
+            f"[{self.product_key}] Done — {len(downloaded)}/{len(chunks)} files downloaded."
         )
         return sorted(downloaded)
 
+
     # ── Internal helpers ──────────────────────────────────────────────────────
 
-    def _download_one_day(self, cm, date_str: str) -> Optional[Path]:
-        """Subset and save one calendar day. Returns path or None on skip."""
+    def _download_chunk(
+        self,
+        cm,
+        chunk_start: str,
+        chunk_end: str,
+        chunk_mode: str,
+    ) -> Optional[Path]:
+        """Subset and save one chunk (day / month / year). Returns path or None on skip."""
         prefix = self.cfg["out_prefix"]
-        out_file = self.output_dir / f"{prefix}_{date_str}.nc"
+
+        # Build a descriptive filename based on chunk mode
+        if chunk_mode == "monthly":
+            tag = chunk_start[:7]           # '2023-01'
+        elif chunk_mode == "yearly":
+            tag = chunk_start[:4]           # '2023'
+        else:
+            tag = chunk_start               # '2023-01-15'
+
+        out_file = self.output_dir / f"{prefix}_{tag}.nc"
 
         if out_file.exists():
             logger.debug(f"  [skip] {out_file.name} already exists.")
             return out_file
 
-        # Build datetime strings Copernicus API wants
-        start_dt = f"{date_str}T00:00:00"
-        end_dt   = f"{date_str}T23:59:59"
+        start_dt = f"{chunk_start}T00:00:00"
+        end_dt   = f"{chunk_end}T23:59:59"
 
         # Base kwargs for copernicusmarine.subset() v2.x
         subset_kwargs: Dict = dict(
@@ -197,16 +228,17 @@ class CopernicusDownloader(BaseSourceDownloader):
             subset_kwargs["password"] = self.password
 
         try:
-            logger.info(f"  → Fetching {self.dataset_id} for {date_str} ...")
+            logger.info(f"  → Fetching {self.dataset_id} [{chunk_start} → {chunk_end}] ...")
             cm.subset(**subset_kwargs)
             logger.info(f"  ✓ Saved: {out_file.name}")
             return out_file
 
         except Exception as exc:
             logger.error(
-                f"  ✗ Failed to download {self.dataset_id} for {date_str}: {exc}"
+                f"  ✗ Failed to download {self.dataset_id} [{chunk_start} → {chunk_end}]: {exc}"
             )
             return None
+
 
 
 # ── Convenience multi-product downloader ─────────────────────────────────────
@@ -260,3 +292,55 @@ def _date_range(start_date: str, end_date: str) -> List[str]:
     end   = datetime.strptime(end_date,   "%Y-%m-%d")
     n_days = (end - start).days + 1
     return [(start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(n_days)]
+
+
+def _month_chunks(start_date: str, end_date: str) -> List[tuple]:
+    """Split date range into (month_start, month_end) pairs.
+
+    Example: '2023-01-15' → '2023-03-10' yields:
+        [('2023-01-15', '2023-01-31'),
+         ('2023-02-01', '2023-02-28'),
+         ('2023-03-01', '2023-03-10')]
+    """
+    import calendar
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end   = datetime.strptime(end_date,   "%Y-%m-%d")
+
+    chunks = []
+    cur = start
+    while cur <= end:
+        # Last day of current month
+        last_day = calendar.monthrange(cur.year, cur.month)[1]
+        month_end = cur.replace(day=last_day)
+        chunk_end = min(month_end, end)
+        chunks.append((cur.strftime("%Y-%m-%d"), chunk_end.strftime("%Y-%m-%d")))
+        # Move to first day of next month
+        if cur.month == 12:
+            cur = cur.replace(year=cur.year + 1, month=1, day=1)
+        else:
+            cur = cur.replace(month=cur.month + 1, day=1)
+
+    return chunks
+
+
+def _year_chunks(start_date: str, end_date: str) -> List[tuple]:
+    """Split date range into (year_start, year_end) pairs.
+
+    Example: '2022-06-01' → '2024-03-31' yields:
+        [('2022-06-01', '2022-12-31'),
+         ('2023-01-01', '2023-12-31'),
+         ('2024-01-01', '2024-03-31')]
+    """
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end   = datetime.strptime(end_date,   "%Y-%m-%d")
+
+    chunks = []
+    cur_year = start.year
+    while cur_year <= end.year:
+        year_start = max(start, datetime(cur_year, 1, 1))
+        year_end   = min(end,   datetime(cur_year, 12, 31))
+        chunks.append((year_start.strftime("%Y-%m-%d"), year_end.strftime("%Y-%m-%d")))
+        cur_year += 1
+
+    return chunks
+

@@ -4,16 +4,16 @@
   "variables": {
     "sst": {
       "variable": "sst",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
-      "min_observed": 22.751256942749023,
-      "max_observed": 32.999752044677734,
+      "min_observed": 22.750425338745117,
+      "max_observed": 32.99997329711914,
       "range_valid": true,
       "status": "PASSED"
     },
     "sss": {
       "variable": "sss",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
       "min_observed": 33.00117111206055,
       "max_observed": 35.4999885559082,
@@ -22,7 +22,7 @@
     },
     "sla": {
       "variable": "sla",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
       "min_observed": -0.07999921590089798,
       "max_observed": 0.07999385893344879,
@@ -31,16 +31,16 @@
     },
     "ucur": {
       "variable": "ucur",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
-      "min_observed": -0.21031880378723145,
-      "max_observed": 0.2102573812007904,
+      "min_observed": -0.2103387862443924,
+      "max_observed": 0.2103009968996048,
       "range_valid": true,
       "status": "PASSED"
     },
     "vcur": {
       "variable": "vcur",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
       "min_observed": -0.1499985307455063,
       "max_observed": 0.14998765289783478,
@@ -49,28 +49,28 @@
     },
     "uwind": {
       "variable": "uwind",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
-      "min_observed": -8.15860366821289,
-      "max_observed": 7.784149169921875,
+      "min_observed": -8.199345588684082,
+      "max_observed": 7.805110454559326,
       "range_valid": true,
       "status": "PASSED"
     },
     "vwind": {
       "variable": "vwind",
-      "total_samples": 93496,
+      "total_samples": 1530997,
       "missing_fraction": 0.03183023872679045,
-      "min_observed": -5.770541667938232,
-      "max_observed": 5.783694267272949,
+      "min_observed": -5.799642562866211,
+      "max_observed": 5.798666477203369,
       "range_valid": true,
       "status": "PASSED"
     },
     "subsurface_temp": {
       "variable": "subsurface_temp",
-      "total_samples": 1402440,
+      "total_samples": 22964955,
       "missing_fraction": 0.03183023872679045,
-      "min_observed": 4.443782329559326,
-      "max_observed": 32.999752044677734,
+      "min_observed": 4.4437737464904785,
+      "max_observed": 32.99997329711914,
       "range_valid": true,
       "status": "PASSED"
     }
