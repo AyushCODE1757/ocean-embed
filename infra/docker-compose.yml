@@ -1,0 +1,17 @@
+services:
+  api:
+    build: { context: .., dockerfile: infra/docker/Dockerfile.serving }
+    env_file: ../.env
+    volumes:
+      - ../artifacts:/app/artifacts:ro
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/v1/health')"]
+      interval: 15s
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/Dockerfile.web
+      args: { NEXT_PUBLIC_API_URL: "http://localhost:8000" }
+    depends_on: { api: { condition: service_healthy } }
+    ports: ["3000:3000"]

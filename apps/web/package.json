@@ -1,0 +1,27 @@
+{
+  "name": "oceanembed-web",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "maplibre-gl": "6.11.2"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vitest": "5.0.2",
+    "@playwright/test": "1.63.0",
+    "tailwindcss": "4.3.3",
+    "@types/react": "latest",
+    "@types/node": "latest"
+  }
+}
