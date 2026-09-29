@@ -8,34 +8,35 @@
     "run_id": { "type": "string" },
     "model_name": { "type": "string" },
     "test_period": { "type": "string" },
+    "is_sample_slice": { "type": "boolean", "default": false },
     "overall": {
       "type": "object",
-      "required": ["rmse", "mae", "bias", "pearson_r", "acc", "skill_score_clim", "d20_rmse", "d26_rmse", "ohc_rmse"],
+      "required": ["rmse", "mae", "bias", "pearson_r", "skill_score_clim"],
       "properties": {
         "rmse": { "type": "number" },
         "mae": { "type": "number" },
         "bias": { "type": "number" },
         "pearson_r": { "type": "number" },
-        "acc": { "type": "number" },
+        "acc": { "type": ["number", "null", "string"] },
         "skill_score_clim": { "type": "number" },
         "std_ratio": { "type": "number" },
-        "d20_rmse": { "type": "number" },
-        "d26_rmse": { "type": "number" },
-        "ohc_rmse": { "type": "number" }
+        "d20_rmse": { "type": ["number", "null"] },
+        "d26_rmse": { "type": ["number", "null"] },
+        "ohc_rmse": { "type": ["number", "null"] }
       }
     },
     "per_depth": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["depth", "rmse", "mae", "bias", "pearson_r", "acc", "skill_score_clim"],
+        "required": ["depth", "rmse", "mae", "bias", "pearson_r", "skill_score_clim"],
         "properties": {
           "depth": { "type": "number" },
           "rmse": { "type": "number" },
           "mae": { "type": "number" },
           "bias": { "type": "number" },
           "pearson_r": { "type": "number" },
-          "acc": { "type": "number" },
+          "acc": { "type": ["number", "null", "string"] },
           "skill_score_clim": { "type": "number" }
         }
       }
@@ -49,7 +50,7 @@
           "mae": { "type": "number" },
           "bias": { "type": "number" },
           "pearson_r": { "type": "number" },
-          "acc": { "type": "number" },
+          "acc": { "type": ["number", "null", "string"] },
           "skill_score_clim": { "type": "number" }
         }
       }
@@ -63,7 +64,7 @@
           "mae": { "type": "number" },
           "bias": { "type": "number" },
           "pearson_r": { "type": "number" },
-          "acc": { "type": "number" },
+          "acc": { "type": ["number", "null", "string"] },
           "skill_score_clim": { "type": "number" }
         }
       }

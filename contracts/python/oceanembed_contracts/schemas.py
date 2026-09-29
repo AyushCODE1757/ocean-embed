@@ -1,5 +1,5 @@
 """OceanEmbed Pydantic Schemas for Structured Data Contracts."""
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -34,7 +34,7 @@ class DepthMetricEntry(BaseModel):
     mae: float
     bias: float
     pearson_r: float
-    acc: float
+    acc: Optional[Union[float, str]] = None
     skill_score_clim: float
 
 
@@ -43,7 +43,7 @@ class OverallMetrics(BaseModel):
     mae: float
     bias: float
     pearson_r: float
-    acc: float
+    acc: Optional[Union[float, str]] = None
     skill_score_clim: float
     std_ratio: Optional[float] = 1.0
     d20_rmse: Optional[float] = None
@@ -55,12 +55,13 @@ class MetricsReport(BaseModel):
     run_id: str
     model_name: str
     test_period: str
+    is_sample_slice: Optional[bool] = False
     overall: OverallMetrics
     per_depth: List[DepthMetricEntry]
-    per_basin: Dict[str, Dict[str, float]]
-    per_season: Dict[str, Dict[str, float]]
-    baselines: Optional[Dict[str, Dict[str, float]]] = None
-    argo_validation: Optional[Dict[str, Dict[str, float]]] = None
+    per_basin: Dict[str, Dict[str, Any]]
+    per_season: Dict[str, Dict[str, Any]]
+    baselines: Optional[Dict[str, Dict[str, Any]]] = None
+    argo_validation: Optional[Dict[str, Any]] = None
     independence_caveat: str = (
         "GLORYS, the SSS product, and ARMOR3D assimilate Argo in-situ observations. "
         "Independent validation against Argo measures consistency with ground truth, but "

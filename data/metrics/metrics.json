@@ -2,6 +2,7 @@
   "run_id": "eval-baseline-b0",
   "model_name": "Baseline-B0-Climatology",
   "test_period": "2023-01-15 to 2024-11-15",
+  "is_sample_slice": false,
   "overall": {
     "rmse": 0.6938,
     "mae": 0.479,
