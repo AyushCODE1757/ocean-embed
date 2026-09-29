@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: oceanembed-ingest
+Version: 0.1.0
+Summary: OceanEmbed M1 Data Ingestion and Manifest Engine
+Requires-Python: >=3.10
+Requires-Dist: oceanembed-contracts
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: xarray
+Requires-Dist: requests
+Requires-Dist: pyyaml
+Requires-Dist: tqdm

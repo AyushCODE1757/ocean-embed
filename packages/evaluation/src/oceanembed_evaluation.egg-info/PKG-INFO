@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: oceanembed-evaluation
+Version: 0.1.0
+Summary: OceanEmbed M6 Evaluation, Baselines, and Argo Validation Suite
+Requires-Python: >=3.10
+Requires-Dist: oceanembed-contracts
+Requires-Dist: oceanembed-harmonize
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: pandas
+Requires-Dist: xarray
+Requires-Dist: pyarrow
+Requires-Dist: pydantic
+Requires-Dist: pyyaml

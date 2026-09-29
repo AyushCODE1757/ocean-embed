@@ -1,0 +1,9 @@
+oceanembed-contracts
+oceanembed-harmonize
+numpy
+scipy
+pandas
+xarray
+pyarrow
+pydantic
+pyyaml

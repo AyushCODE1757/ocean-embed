@@ -1,1 +1,26 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/gaps.schema.json",
+  "title": "OceanEmbed Argo Advisor Observation Gaps and Deployment Sites Schema",
+  "type": "object",
+  "required": ["date", "k", "recommended_sites"],
+  "properties": {
+    "date": { "type": "string", "format": "date" },
+    "k": { "type": "integer", "minimum": 1 },
+    "recommended_sites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rank", "latitude", "longitude", "gap_score", "uncertainty_value", "distance_to_nearest_argo_km"],
+        "properties": {
+          "rank": { "type": "integer" },
+          "latitude": { "type": "number" },
+          "longitude": { "type": "number" },
+          "gap_score": { "type": "number" },
+          "uncertainty_value": { "type": "number" },
+          "distance_to_nearest_argo_km": { "type": "number" }
+        }
+      }
+    }
+  }
+}

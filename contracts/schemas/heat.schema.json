@@ -1,1 +1,25 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/heat.schema.json",
+  "title": "OceanEmbed Derived Physical Heat Content and Isotherm Depths Schema",
+  "type": "object",
+  "required": ["date", "metric", "units", "shape"],
+  "properties": {
+    "date": { "type": "string", "format": "date" },
+    "metric": { "type": "string", "enum": ["ohc", "d26", "d20"] },
+    "units": { "type": "string" },
+    "shape": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "lat_count": { "type": "integer", "const": 101 },
+        "lon_count": { "type": "integer", "const": 241 }
+      }
+    }
+  }
+}

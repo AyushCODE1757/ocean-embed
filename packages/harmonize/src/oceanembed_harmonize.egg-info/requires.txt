@@ -1,0 +1,7 @@
+oceanembed-contracts
+numpy
+scipy
+xarray
+zarr
+pyarrow
+pyyaml

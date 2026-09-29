@@ -1,1 +1,324 @@
-# Configuration for contracts/openapi/oceanembed.v1.yaml
+openapi: 3.1.0
+info:
+  title: OceanEmbed REST API
+  version: "1.0.0"
+  description: >
+    OceanEmbed Subsurface Ocean State Reconstruction and Argo Advisor API.
+    Provides reconstructed subsurface 3D ocean temperature fields, Argo in-situ validation overlays,
+    uncertainty quantification, physical diagnostic layers (OHC, D20, D26), and deployment site recommendations.
+
+servers:
+  - url: /v1
+    description: Production API Server v1
+
+paths:
+  /meta:
+    get:
+      summary: Get system and model metadata
+      description: Returns grid boundaries, available dates, active model versions, training time span, input completeness, and data-through date.
+      responses:
+        '200':
+          description: Metadata response
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [grid, depths, channels, available_dates, model_version, training_span]
+                properties:
+                  grid:
+                    type: object
+                  depths:
+                    type: array
+                    items: { type: number }
+                  channels:
+                    type: array
+                    items: { type: string }
+                  available_dates:
+                    type: object
+                    properties:
+                      start: { type: string }
+                      end: { type: string }
+                  model_version: { type: string }
+                  training_span: { type: string }
+                  data_through_date: { type: string }
+                  input_completeness: { type: string }
+
+  /slice:
+    get:
+      summary: Get 2D horizontal temperature slice
+      description: Returns 2D temperature grid [101, 241] for a specified date and depth, optionally with reanalysis ground truth and error.
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+          example: "2024-05-15"
+        - name: depth
+          in: query
+          required: true
+          schema: { type: number }
+          example: 100.0
+        - name: include_truth
+          in: query
+          required: false
+          schema: { type: boolean, default: false }
+      responses:
+        '200':
+          description: 2D temperature slice
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [date, depth, lat_count, lon_count, data]
+                properties:
+                  date: { type: string }
+                  depth: { type: number }
+                  lat_count: { type: integer, example: 101 }
+                  lon_count: { type: integer, example: 241 }
+                  data:
+                    type: array
+                    items:
+                      type: array
+                      items: { type: number, nullable: true }
+                  truth:
+                    type: array
+                    items:
+                      type: array
+                      items: { type: number, nullable: true }
+                  error:
+                    type: array
+                    items:
+                      type: array
+                      items: { type: number, nullable: true }
+
+  /profile:
+    get:
+      summary: Get vertical vertical temperature profile probe
+      description: Returns predicted 15-depth vertical profile with GLORYS reference, uncertainty bounds (10th/90th percentiles), and nearby Argo float profiles.
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: lat
+          in: query
+          required: true
+          schema: { type: number }
+        - name: lon
+          in: query
+          required: true
+          schema: { type: number }
+      responses:
+        '200':
+          description: Vertical profile with overlays
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [date, lat, lon, depths, predicted_temp, uncertainty_spread]
+                properties:
+                  date: { type: string }
+                  lat: { type: number }
+                  lon: { type: number }
+                  depths:
+                    type: array
+                    items: { type: number }
+                  predicted_temp:
+                    type: array
+                    items: { type: number }
+                  glorys_temp:
+                    type: array
+                    items: { type: number, nullable: true }
+                  climatology_temp:
+                    type: array
+                    items: { type: number }
+                  uncertainty_spread:
+                    type: array
+                    items: { type: number }
+                  nearby_argo_profiles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        platform_id: { type: string }
+                        distance_km: { type: number }
+                        depths: { type: array, items: { type: number } }
+                        temps: { type: array, items: { type: number } }
+
+  /section:
+    get:
+      summary: Get vertical transect / cross-section
+      description: Interpolates subsurface temperature along an arbitrary multi-point polyline path.
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: path
+          in: query
+          required: true
+          description: Semicolon-separated lat,lon coordinates e.g. "10.0,60.0;15.0,75.0;20.0,90.0"
+          schema: { type: string }
+      responses:
+        '200':
+          description: Vertical transect array [depth, path_points]
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: { type: string }
+                  points: { type: array, items: { type: object } }
+                  depths: { type: array, items: { type: number } }
+                  temperatures: { type: array, items: { type: array, items: { type: number, nullable: true } } }
+
+  /uncertainty:
+    get:
+      summary: Get 2D uncertainty ensemble spread
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: depth
+          in: query
+          required: true
+          schema: { type: number }
+      responses:
+        '200':
+          description: Ensemble spread array
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: { type: string }
+                  depth: { type: number }
+                  spread: { type: array, items: { type: array, items: { type: number, nullable: true } } }
+
+  /gaps:
+    get:
+      summary: Get top-K recommended Argo deployment locations
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: k
+          in: query
+          required: false
+          schema: { type: integer, default: 10 }
+      responses:
+        '200':
+          description: List of optimal float deployment coordinates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: { type: string }
+                  k: { type: integer }
+                  sites: { type: array, items: { type: object } }
+
+  /heat:
+    get:
+      summary: Get Ocean Heat Content (OHC) or Isotherm Depth (D26, D20)
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: metric
+          in: query
+          required: true
+          schema: { type: string, enum: [ohc, d26, d20] }
+      responses:
+        '200':
+          description: 2D heat metric grid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date: { type: string }
+                  metric: { type: string }
+                  units: { type: string }
+                  grid: { type: array, items: { type: array, items: { type: number, nullable: true } } }
+
+  /metrics:
+    get:
+      summary: Get model validation and baseline skill scores
+      responses:
+        '200':
+          description: Complete metrics breakdown JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsReport'
+
+  /provenance:
+    get:
+      summary: Get data provenance, version hashes, and citations
+      parameters:
+        - name: field
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: Provenance details
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /jobs:
+    post:
+      summary: Submit on-demand reconstruction or forecast inference job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [date]
+              properties:
+                date: { type: string, format: date }
+                tier: { type: string, enum: [final, interim, nrt], default: final }
+      responses:
+        '202':
+          description: Job accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id: { type: string }
+                  status: { type: string }
+
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: System healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: "ok" }
+                  version: { type: string, example: "1.0.0" }
+
+components:
+  schemas:
+    MetricsReport:
+      type: object
+      properties:
+        run_id: { type: string }
+        overall: { type: object }
+        per_depth: { type: array, items: { type: object } }
+        per_basin: { type: object }
+        per_season: { type: object }
+        baselines: { type: object }
+        independence_caveat: { type: string }
