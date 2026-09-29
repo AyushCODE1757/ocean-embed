@@ -1,0 +1,78 @@
+{
+  "source_tier": "final",
+  "qc_passed": true,
+  "variables": {
+    "sst": {
+      "variable": "sst",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": 22.751256942749023,
+      "max_observed": 32.999752044677734,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "sss": {
+      "variable": "sss",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": 33.00117111206055,
+      "max_observed": 35.4999885559082,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "sla": {
+      "variable": "sla",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": -0.07999921590089798,
+      "max_observed": 0.07999385893344879,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "ucur": {
+      "variable": "ucur",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": -0.21031880378723145,
+      "max_observed": 0.2102573812007904,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "vcur": {
+      "variable": "vcur",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": -0.1499985307455063,
+      "max_observed": 0.14998765289783478,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "uwind": {
+      "variable": "uwind",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": -8.15860366821289,
+      "max_observed": 7.784149169921875,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "vwind": {
+      "variable": "vwind",
+      "total_samples": 93496,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": -5.770541667938232,
+      "max_observed": 5.783694267272949,
+      "range_valid": true,
+      "status": "PASSED"
+    },
+    "subsurface_temp": {
+      "variable": "subsurface_temp",
+      "total_samples": 1402440,
+      "missing_fraction": 0.03183023872679045,
+      "min_observed": 4.443782329559326,
+      "max_observed": 32.999752044677734,
+      "range_valid": true,
+      "status": "PASSED"
+    }
+  }
+}

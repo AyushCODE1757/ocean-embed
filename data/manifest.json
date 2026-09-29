@@ -1,0 +1,424 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-09-29T08:33:02.857225+00:00",
+  "total_files": 26,
+  "total_bytes": 29381928,
+  "files": [
+    {
+      "dataset_id": "argo_profiles_fixture",
+      "variable": "argo_profiles",
+      "filename": "argo_profiles.parquet",
+      "relative_path": "data/argo/argo_profiles.parquet",
+      "sha256": "8f3df40fb19367545cac367c9333efeb81fe36aef290565b12fdba1352bb7d9e",
+      "bytes": 26491,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-01-15",
+        "end": "2024-11-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.856981+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2023-01-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2023-01-15.nc",
+      "sha256": "a86f60cb9c69761eb7814490cf6472dd960c129ac8c5fe473480f77feeab2e46",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-01-15",
+        "end": "2023-01-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.353863+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2023-04-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2023-04-15.nc",
+      "sha256": "c01742a38bbbb05fcc5791e2b23d5a813bcec18ac31924a9fa68ffe894df3c30",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-04-15",
+        "end": "2023-04-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.410724+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2023-07-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2023-07-15.nc",
+      "sha256": "bf78b4dcc97d3e07b0aef7a1ee6379e9eaef7ab6c4bf6cbe2cba5a120a63fa7d",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-07-15",
+        "end": "2023-07-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.479561+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2023-10-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2023-10-15.nc",
+      "sha256": "3d38c38e099aea3c4b88e539d92cb555f2d9a737c5e9df4c2fa9e2cb10e80d6b",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-10-15",
+        "end": "2023-10-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.537258+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2024-02-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2024-02-15.nc",
+      "sha256": "9e8fa0da84573b0177313326fac027926ac0dd89f8ecb829d75d87149122a995",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-02-15",
+        "end": "2024-02-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.618335+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2024-05-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2024-05-15.nc",
+      "sha256": "387fd8d7c34a3e98872aeb45fdfb408a6e0f901827448337a09970ae0e7ad23b",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-05-15",
+        "end": "2024-05-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.679963+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2024-08-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2024-08-15.nc",
+      "sha256": "33aa9d762042e7eabea8882c4ac86624b7fb693f3f2d501620c0b5cfff182462",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-08-15",
+        "end": "2024-08-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.754451+00:00"
+    },
+    {
+      "dataset_id": "armor3d_benchmark_fixture",
+      "variable": "armor3d_temp",
+      "filename": "armor3d_benchmark_2024-11-15.nc",
+      "relative_path": "data/raw/armor3d_benchmark_2024-11-15.nc",
+      "sha256": "a2dcaac9f540350cdb5f8347d80bb028e88e8f57ee4929273a5a334b4b26947b",
+      "bytes": 1472114,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-11-15",
+        "end": "2024-11-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.815839+00:00"
+    },
+    {
+      "dataset_id": "gebco_fixture",
+      "variable": "bathymetry",
+      "filename": "gebco_bathymetry_fixture.nc",
+      "relative_path": "data/raw/gebco_bathymetry_fixture.nc",
+      "sha256": "4fc8bf5be0d79c8214c652c8f03a17db07826592b2fb7183a6d4bdf507597cdd",
+      "bytes": 229997,
+      "source_tier": "fixture",
+      "source_url": "local://fixtures/gebco",
+      "doi": "",
+      "date_range": {
+        "start": "static",
+        "end": "static"
+      },
+      "recorded_at": "2026-09-29T08:33:02.295229+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2023-01-15.nc",
+      "relative_path": "data/raw/glorys_target_2023-01-15.nc",
+      "sha256": "6c3d4d3b85706f0c2834c423dc54db6e81d0459aaf47e6df2e12a7bab2ff9ffc",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-01-15",
+        "end": "2023-01-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.333564+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2023-04-15.nc",
+      "relative_path": "data/raw/glorys_target_2023-04-15.nc",
+      "sha256": "bef0b231fa284582c8374067e49f57e75f0f51d1b6db60f602df3dad5a98e9ec",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-04-15",
+        "end": "2023-04-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.385083+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2023-07-15.nc",
+      "relative_path": "data/raw/glorys_target_2023-07-15.nc",
+      "sha256": "904db1766079e981e00270a14ceccd00feec396d47b638b6dc521b66fc085ba7",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-07-15",
+        "end": "2023-07-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.459832+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2023-10-15.nc",
+      "relative_path": "data/raw/glorys_target_2023-10-15.nc",
+      "sha256": "9e0531ee2a96281a78ed9e3c73bbce4f1a9c89b3ec1585e16f7cdeb6090224b8",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-10-15",
+        "end": "2023-10-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.512691+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2024-02-15.nc",
+      "relative_path": "data/raw/glorys_target_2024-02-15.nc",
+      "sha256": "9d91a7eb21e71ea45b0b4cf18bbb6c284194572ea722ef3d2713c71e6b3ee5ea",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-02-15",
+        "end": "2024-02-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.579790+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2024-05-15.nc",
+      "relative_path": "data/raw/glorys_target_2024-05-15.nc",
+      "sha256": "38a60feed6900ce17a55648a560d033ef6c6578679717e95edeba8a77d2fa50d",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-05-15",
+        "end": "2024-05-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.659137+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2024-08-15.nc",
+      "relative_path": "data/raw/glorys_target_2024-08-15.nc",
+      "sha256": "7cd765c83625d844daa0def9a30d44246b5635a4deeb4c2eefddc0e32fe96b8d",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-08-15",
+        "end": "2024-08-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.724685+00:00"
+    },
+    {
+      "dataset_id": "glorys_reanalysis_fixture",
+      "variable": "subsurface_temp",
+      "filename": "glorys_target_2024-11-15.nc",
+      "relative_path": "data/raw/glorys_target_2024-11-15.nc",
+      "sha256": "37df785a261ec6ad5cd2ec7b203630668b79428af2afdd4e11fec56c9611f2ce",
+      "bytes": 1472119,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-11-15",
+        "end": "2024-11-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.788954+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2023-01-15.nc",
+      "relative_path": "data/raw/surface_obs_2023-01-15.nc",
+      "sha256": "2c9030875b0e522b7f3fa5a299706a9e209c4b2705c065c179ced08295ab4b8d",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-01-15",
+        "end": "2023-01-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.315424+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2023-04-15.nc",
+      "relative_path": "data/raw/surface_obs_2023-04-15.nc",
+      "sha256": "f9c6b36a71f44ff9ed2739837db44163466cf8a30cbf5f631064164953924aca",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-04-15",
+        "end": "2023-04-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.375784+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2023-07-15.nc",
+      "relative_path": "data/raw/surface_obs_2023-07-15.nc",
+      "sha256": "4072b8404ad16ea837521eafeffe3c797e9eaa4c89eadaa127d4a6ee6d81d6dd",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-07-15",
+        "end": "2023-07-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.450849+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2023-10-15.nc",
+      "relative_path": "data/raw/surface_obs_2023-10-15.nc",
+      "sha256": "987257d20632271fce575544aba88353706117d039def3e8848945ca3828b5ac",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2023-10-15",
+        "end": "2023-10-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.501890+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2024-02-15.nc",
+      "relative_path": "data/raw/surface_obs_2024-02-15.nc",
+      "sha256": "67a9b998ffe768a5f15cff52e131ed57aacdcf035197aeb0db8a728cce4041cf",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-02-15",
+        "end": "2024-02-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.565876+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2024-05-15.nc",
+      "relative_path": "data/raw/surface_obs_2024-05-15.nc",
+      "sha256": "7e40f800679d03040ecf4461fa458f0d52c650dd9f8df830007b654bb6838a51",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-05-15",
+        "end": "2024-05-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.647209+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2024-08-15.nc",
+      "relative_path": "data/raw/surface_obs_2024-08-15.nc",
+      "sha256": "81c4404ff1bb0879e19efb22b7ecf09ee87596b067407295dd6f766391050689",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-08-15",
+        "end": "2024-08-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.705641+00:00"
+    },
+    {
+      "dataset_id": "surface_obs_fixture",
+      "variable": "surface_inputs",
+      "filename": "surface_obs_2024-11-15.nc",
+      "relative_path": "data/raw/surface_obs_2024-11-15.nc",
+      "sha256": "983b0a9185b101233cffab2fa37c6c7371469d48786a6f32e8e08d4621a420da",
+      "bytes": 696447,
+      "source_tier": "fixture",
+      "source_url": "",
+      "doi": "",
+      "date_range": {
+        "start": "2024-11-15",
+        "end": "2024-11-15"
+      },
+      "recorded_at": "2026-09-29T08:33:02.779804+00:00"
+    }
+  ]
+}

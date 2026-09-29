@@ -1,0 +1,224 @@
+{
+  "run_id": "eval-baseline-b0",
+  "model_name": "Baseline-B0-Climatology",
+  "test_period": "2023-01-15 to 2024-11-15",
+  "overall": {
+    "rmse": 0.6938,
+    "mae": 0.479,
+    "bias": 0.0,
+    "pearson_r": 0.9973,
+    "acc": 0.0,
+    "skill_score_clim": 0.0,
+    "std_ratio": 0.9973,
+    "d20_rmse": 4.387,
+    "d26_rmse": 5.136,
+    "ohc_rmse": 0.48
+  },
+  "per_depth": [
+    {
+      "depth": 0.0,
+      "rmse": 1.0595,
+      "mae": 0.8967,
+      "bias": 0.0,
+      "pearson_r": 0.871,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 5.0,
+      "rmse": 1.0595,
+      "mae": 0.8967,
+      "bias": 0.0,
+      "pearson_r": 0.871,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 10.0,
+      "rmse": 1.0595,
+      "mae": 0.8967,
+      "bias": 0.0,
+      "pearson_r": 0.871,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 20.0,
+      "rmse": 1.0595,
+      "mae": 0.8967,
+      "bias": 0.0,
+      "pearson_r": 0.871,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 30.0,
+      "rmse": 0.9517,
+      "mae": 0.8052,
+      "bias": -0.0,
+      "pearson_r": 0.8651,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 50.0,
+      "rmse": 0.8265,
+      "mae": 0.6987,
+      "bias": 0.0,
+      "pearson_r": 0.8808,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 75.0,
+      "rmse": 0.6709,
+      "mae": 0.5661,
+      "bias": 0.0,
+      "pearson_r": 0.9129,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 100.0,
+      "rmse": 0.5393,
+      "mae": 0.4541,
+      "bias": 0.0,
+      "pearson_r": 0.9357,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 125.0,
+      "rmse": 0.4356,
+      "mae": 0.3659,
+      "bias": -0.0,
+      "pearson_r": 0.9489,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 150.0,
+      "rmse": 0.3555,
+      "mae": 0.2982,
+      "bias": 0.0,
+      "pearson_r": 0.9568,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 200.0,
+      "rmse": 0.2462,
+      "mae": 0.2059,
+      "bias": -0.0,
+      "pearson_r": 0.9651,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 300.0,
+      "rmse": 0.1356,
+      "mae": 0.1131,
+      "bias": -0.0,
+      "pearson_r": 0.9713,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 500.0,
+      "rmse": 0.0588,
+      "mae": 0.0489,
+      "bias": -0.0,
+      "pearson_r": 0.9747,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 700.0,
+      "rmse": 0.033,
+      "mae": 0.0274,
+      "bias": 0.0,
+      "pearson_r": 0.9757,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    },
+    {
+      "depth": 1000.0,
+      "rmse": 0.0176,
+      "mae": 0.0146,
+      "bias": 0.0,
+      "pearson_r": 0.9763,
+      "acc": 0.0,
+      "skill_score_clim": 0.0
+    }
+  ],
+  "per_basin": {
+    "arabian_sea": {
+      "rmse": 0.687,
+      "mae": 0.4706,
+      "bias": 0.0,
+      "pearson_r": 0.9975,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 0.9975
+    },
+    "bay_of_bengal": {
+      "rmse": 0.6998,
+      "mae": 0.4865,
+      "bias": 0.0,
+      "pearson_r": 0.9972,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 0.9972
+    },
+    "equatorial_indian_ocean": {
+      "rmse": 0.6932,
+      "mae": 0.4781,
+      "bias": 0.0,
+      "pearson_r": 0.9976,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 0.9976
+    }
+  },
+  "per_season": {
+    "pre_monsoon_mam": {
+      "rmse": 0.9164,
+      "mae": 0.7458,
+      "bias": -0.7458,
+      "pearson_r": 1.0,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 0.9468
+    },
+    "southwest_monsoon_jjas": {
+      "rmse": 0.3439,
+      "mae": 0.2112,
+      "bias": -0.1847,
+      "pearson_r": 0.9996,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 0.9859
+    },
+    "post_monsoon_on": {
+      "rmse": 0.9255,
+      "mae": 0.7533,
+      "bias": 0.7533,
+      "pearson_r": 0.9999,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 1.06
+    },
+    "winter_djf": {
+      "rmse": 0.3328,
+      "mae": 0.2057,
+      "bias": 0.1771,
+      "pearson_r": 0.9996,
+      "acc": 0.0,
+      "skill_score_clim": 0.0,
+      "std_ratio": 1.0131
+    }
+  },
+  "baselines": {},
+  "argo_validation": {},
+  "independence_caveat": "Caveat on Argo Independence: GLORYS12V1, SMOS+SMAP salinity, and ARMOR3D assimilate Argo in-situ profiles. Consequently, comparisons against Argo provide real-world ground truth validation, but reanalysis training targets have seen Argo profiles during data assimilation. We report GLORYS-vs-Argo, ARMOR3D-vs-Argo, and OceanEmbed-vs-Argo transparently side-by-side."
+}
