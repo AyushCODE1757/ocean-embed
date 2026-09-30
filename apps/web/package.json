@@ -11,17 +11,23 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@splinetool/runtime": "^2.0.63",
+    "@types/three": "^0.186.0",
+    "maplibre-gl": "6.11.2",
     "next": "16.3.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "maplibre-gl": "6.11.2"
+    "three": "^0.186.1",
+    "vite": "^8.3.1"
   },
   "devDependencies": {
-    "typescript": "7.0.2",
-    "vitest": "5.0.2",
     "@playwright/test": "1.63.0",
-    "tailwindcss": "4.3.3",
+    "@types/node": "latest",
     "@types/react": "latest",
-    "@types/node": "latest"
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vitest": "5.0.2"
   }
 }

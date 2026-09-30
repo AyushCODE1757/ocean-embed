@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 
 from oceanembed_serving.main import app
@@ -12,8 +11,8 @@ def test_health():
 
 def test_missing_store_is_503_not_fake_data(monkeypatch, tmp_path):
     monkeypatch.setenv("OE_PREDICTIONS_PATH", str(tmp_path / "missing.zarr"))
-    from oceanembed_serving.settings import get_settings
     from oceanembed_serving.services import store
+    from oceanembed_serving.settings import get_settings
 
     get_settings.cache_clear()
     store._open.cache_clear()
@@ -22,4 +21,12 @@ def test_missing_store_is_503_not_fake_data(monkeypatch, tmp_path):
 
 
 def test_depth_out_of_range_rejected():
-    assert client.get("/v1/slice", params={"date": "2024-01-01", "depth": 5000}).status_code == 422
+    from oceanembed_serving.deps import get_store
+
+    app.dependency_overrides[get_store] = lambda: None
+    try:
+        assert (
+            client.get("/v1/slice", params={"date": "2024-01-01", "depth": 5000}).status_code == 422
+        )
+    finally:
+        app.dependency_overrides.clear()

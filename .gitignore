@@ -1,0 +1,100 @@
+# ==============================================================================
+# OceanEmbed .gitignore
+# ==============================================================================
+
+# Node.js & Web
+node_modules/
+.pnp
+.pnp.js
+apps/web/node_modules/
+
+# Next.js Build Outputs
+.next/
+apps/web/.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Next.js runtime environment variables
+.env*.local
+.env
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+.playwright/
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.Python
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# Python Linters & Typecheckers
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.coverage
+.coverage.*
+htmlcov/
+
+# Large Datasets, Model Checkpoints & Temporary Runs
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*.nc
+data/processed/*.zarr
+runs/*/checkpoints/
+artifacts/cache/
+*.parquet
+*.zarr
+
+# Temporary branches / clones
+ocean-embed-BranchA/
+
+# Operating System & Editor Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# IDE Files
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo

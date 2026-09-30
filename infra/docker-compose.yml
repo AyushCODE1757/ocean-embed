@@ -4,6 +4,8 @@ services:
     env_file: ../.env
     volumes:
       - ../artifacts:/app/artifacts:ro
+      - ../data:/app/data:ro
+      - ../runs:/app/runs:ro
     ports: ["8000:8000"]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/v1/health')"]

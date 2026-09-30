@@ -10,6 +10,9 @@ dependencies = [
   "xarray==2026.7.0",
   "zarr==3.4.0",
   "numpy==2.5.3",
+  "pandas==3.0.6",
+  "pyarrow==25.0.1",
+  "pyyaml==6.0.3",
 ]
 
 [dependency-groups]
@@ -24,3 +27,6 @@ packages = ["src/oceanembed_serving"]
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
+ignore = ["B008"]

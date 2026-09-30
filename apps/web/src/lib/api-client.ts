@@ -1,35 +1,26 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+/** API client — demo deployment binds directly to the simulator facade.
+ * The type surface mirrors contracts/openapi so switching to the real
+ * FastAPI service later is a one-file change (fetch instead of simApi). */
 
-export type Provenance = { run_id: string; model_id: string; source_tier: string };
-export type Meta = {
-  lat: number[]; lon: number[]; depths_m: number[];
-  dates: string[]; data_through: string | null; provenance: Provenance;
-};
-export type Slice = {
-  date: string; depth_m: number; lat: number[]; lon: number[];
-  values: (number | null)[][]; provenance: Provenance;
-};
-export type Profile = {
-  date: string; lat: number; lon: number; depths_m: number[];
-  mean: (number | null)[]; spread: (number | null)[]; provenance: Provenance;
-};
+import { simApi, type Layer, type Grid, type Meta, type Profile, type Section } from "./sim";
+import type { GapSite } from "./sim/gaps";
+import type { Osse } from "./sim/osse";
+import type { MetricRow, Basin, Season } from "./sim/metrics";
+import type { Cyclone } from "./sim/cyclone";
+import type { HeatMetric } from "./sim/derived";
 
-export class ApiError extends Error {
-  constructor(public status: number, message: string) { super(message); }
-}
-
-async function get<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
-  const qs = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)]));
-  const res = await fetch(`${BASE}${path}?${qs}`);
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new ApiError(res.status, body.detail ?? res.statusText);
-  }
-  return res.json() as Promise<T>;
-}
+export type { Layer, Grid, Meta, Profile, Section, GapSite, Osse, MetricRow, Cyclone, HeatMetric, Basin, Season };
 
 export const api = {
-  meta: () => get<Meta>("/v1/meta"),
-  slice: (date: string, depth: number) => get<Slice>("/v1/slice", { date, depth }),
-  profile: (date: string, lat: number, lon: number) => get<Profile>("/v1/profile", { date, lat, lon }),
+  meta: () => simApi.meta(),
+  slice: (date: string, depth: number, layer: Layer = "temp") => simApi.slice(date, depth, layer),
+  profile: (date: string, lat: number, lon: number) => simApi.profile(date, lat, lon),
+  section: (date: string, from: { lat: number; lon: number }, to: { lat: number; lon: number }) =>
+    simApi.section(date, from, to),
+  uncertainty: (date: string, depth: number) => simApi.slice(date, depth, "uncertainty"),
+  gaps: (date: string, k = 10, onProgress?: (p: number) => void) => simApi.gaps(date, k, onProgress),
+  osse: () => simApi.osse(),
+  metrics: (basin?: Basin, season?: Season) => simApi.metrics(basin, season),
+  heat: (date: string, metric: HeatMetric, lat?: number, lon?: number) => simApi.heat(date, metric, lat, lon),
+  cyclone: (id?: string) => simApi.cyclone(id),
 };
