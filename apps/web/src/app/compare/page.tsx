@@ -15,7 +15,7 @@ import { fmtDate } from "@/lib/format";
 const PANELS: { field: SliceField; title: string; note: string }[] = [
   { field: "model", title: "OceanEmbed", note: "reconstructed" },
   { field: "truth", title: "GLORYS", note: "training target" },
-  { field: "error", title: "Model − GLORYS", note: "error" },
+  { field: "error", title: "Error", note: "OceanEmbed − GLORYS" },
 ];
 
 export default function Compare() {
@@ -26,6 +26,7 @@ export default function Compare() {
   const [playing, setPlaying] = useState(false);
   const [views, setViews] = useState<Record<string, { url: string; lo: number; hi: number } | null>>({});
   const [stats, setStats] = useState<Record<string, { mean: number; n: number }>>({});
+  const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
 
   const date = dates[dateIdx] ?? "";
@@ -33,8 +34,9 @@ export default function Compare() {
   useEffect(() => {
     if (!date || !meta) return;
     let on = true;
-    setViews({});
-    setStats({});
+    // keep the previous field visible while the new one renders (no layout
+    // oscillation); swap atomically when all three are ready
+    setBusy(true);
     Promise.all(
       PANELS.map(async (p) => {
         const s = await cachedSlice(date, depth, p.field);
@@ -48,12 +50,16 @@ export default function Compare() {
       }),
     )
       .then((pairs) => {
-        if (on) {
-          setViews(Object.fromEntries(pairs.map(([k, v]) => [k, { url: v.url, lo: v.lo, hi: v.hi }])));
-          setStats(Object.fromEntries(pairs.map(([k, v]) => [k, { mean: v.mean, n: v.nValid }])));
-        }
+        if (!on) return;
+        setViews(Object.fromEntries(pairs.map(([k, v]) => [k, { url: v.url, lo: v.lo, hi: v.hi }])));
+        setStats(Object.fromEntries(pairs.map(([k, v]) => [k, { mean: v.mean, n: v.nValid }])));
+        setBusy(false);
       })
-      .catch((e) => on && setFailed(String(e?.message ?? e)));
+      .catch((e) => {
+        if (!on) return;
+        setFailed(String(e?.message ?? e));
+        setBusy(false);
+      });
     return () => { on = false; };
   }, [date, depth, meta]);
 
@@ -85,9 +91,12 @@ export default function Compare() {
             <div key={p.field} className="panel" style={{ flex: "1 1 430px", overflow: "hidden" }}>
               <div className="panel-head spread">
                 <b style={{ fontSize: 15 }}>{p.title}</b>
-                <span className="badge">{p.note}</span>
+                <span className="row" style={{ gap: 8 }}>
+                  {busy && v && <span className="badge info">updating…</span>}
+                  <span className="badge">{p.note}</span>
+                </span>
               </div>
-              <div style={{ position: "relative", height: 360 }}>
+              <div style={{ position: "relative", height: 360, opacity: busy && v ? 0.75 : 1, transition: "opacity 200ms" }}>
                 <OceanMap
                   field={v?.url ?? null}
                   lon0={meta?.lon[0] ?? 45} lat0={meta?.lat[0] ?? 5}
@@ -96,15 +105,16 @@ export default function Compare() {
                 />
                 {!v && <div className="skeleton" style={{ position: "absolute", inset: 12 }} />}
               </div>
-              <div className="panel-pad col" style={{ paddingTop: 10, gap: 6 }}>
-                {v && <Colorbar field={p.field} lo={v.lo} hi={v.hi} units="°C" />}
-                {st && (
-                  <p className="tiny num" style={{ margin: 0 }}>
-                    {p.field === "error"
+              {/* fixed-height footer: no layout shift while fields load */}
+              <div className="panel-pad col" style={{ paddingTop: 10, gap: 6, minHeight: 58 }}>
+                {v ? <Colorbar field={p.field} lo={v.lo} hi={v.hi} units="°C" /> : <div className="skeleton" style={{ height: 10 }} />}
+                <p className="tiny num" style={{ margin: 0, minHeight: 18 }}>
+                  {st
+                    ? p.field === "error"
                       ? <>area-mean bias {st.mean >= 0 ? "+" : ""}{st.mean.toFixed(2)} °C over {st.n.toLocaleString("en-IN")} wet cells · {fmtDate(date)} · {depth} m</>
-                      : <>domain mean {st.mean.toFixed(2)} °C over {st.n.toLocaleString("en-IN")} wet cells · {fmtDate(date)} · {depth} m</>}
-                  </p>
-                )}
+                      : <>domain mean {st.mean.toFixed(2)} °C over {st.n.toLocaleString("en-IN")} wet cells · {fmtDate(date)} · {depth} m</>
+                    : " "}
+                </p>
               </div>
             </div>
           );
