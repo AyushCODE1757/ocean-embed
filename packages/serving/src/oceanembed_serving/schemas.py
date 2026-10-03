@@ -118,3 +118,30 @@ class HeatField(BaseModel):
     lon: list[float]
     values: list[list[float | None]]  # [lat][lon]
     provenance: Provenance
+
+
+class TrackPoint(BaseModel):
+    iso_time: str
+    lat: float
+    lon: float
+    wind_kt: float | None = None
+    pres_hpa: float | None = None
+    dist2land_km: float | None = None
+    landfall: float | None = None
+
+
+class Storm(BaseModel):
+    sid: str
+    name: str
+    basin: str
+    season: int
+    n_points: int
+    track: list[TrackPoint]
+
+
+class Cyclones(BaseModel):
+    source: str | None = None
+    source_url: str | None = None
+    retrieved_utc: str | None = None
+    note: str | None = None
+    storms: list[Storm]

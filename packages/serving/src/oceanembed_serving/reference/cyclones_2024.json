@@ -1,0 +1,1170 @@
+{
+ "source": "IBTrACS v04r01 (NOAA NCEI), last3years list, basin NI",
+ "source_url": "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/ibtracs.last3years.list.v04r01.csv",
+ "retrieved_utc": "2026-10-03T20:15:15+00:00",
+ "license": "US public domain (NOAA)",
+ "note": "Official best-track records; winds from WMO agency (RSMC New Delhi).",
+ "storms": [
+  {
+   "sid": "2024145N14087",
+   "name": "Remal",
+   "basin": "NI",
+   "season": 2024,
+   "n_points": 40,
+   "track": [
+    {
+     "iso_time": "2024-05-23 12:00:00",
+     "lat": 13.6,
+     "lon": 86.6,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 570.0,
+     "landfall": 570.0
+    },
+    {
+     "iso_time": "2024-05-23 15:00:00",
+     "lat": 13.9,
+     "lon": 87.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 593.0,
+     "landfall": 583.0
+    },
+    {
+     "iso_time": "2024-05-23 18:00:00",
+     "lat": 14.3,
+     "lon": 87.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 589.0,
+     "landfall": 586.0
+    },
+    {
+     "iso_time": "2024-05-23 21:00:00",
+     "lat": 14.7,
+     "lon": 88.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 594.0,
+     "landfall": 586.0
+    },
+    {
+     "iso_time": "2024-05-24 00:00:00",
+     "lat": 15.2,
+     "lon": 88.6,
+     "wind_kt": 25.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 585.0,
+     "landfall": 559.0
+    },
+    {
+     "iso_time": "2024-05-24 03:00:00",
+     "lat": 15.5,
+     "lon": 89.0,
+     "wind_kt": 25.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 559.0,
+     "landfall": 524.0
+    },
+    {
+     "iso_time": "2024-05-24 06:00:00",
+     "lat": 15.9,
+     "lon": 89.3,
+     "wind_kt": 25.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 524.0,
+     "landfall": 513.0
+    },
+    {
+     "iso_time": "2024-05-24 09:00:00",
+     "lat": 16.1,
+     "lon": 89.4,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 513.0,
+     "landfall": 502.0
+    },
+    {
+     "iso_time": "2024-05-24 12:00:00",
+     "lat": 16.4,
+     "lon": 89.6,
+     "wind_kt": 25.0,
+     "pres_hpa": 995.0,
+     "dist2land_km": 493.0,
+     "landfall": 485.0
+    },
+    {
+     "iso_time": "2024-05-24 15:00:00",
+     "lat": 16.7,
+     "lon": 89.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 486.0,
+     "landfall": 474.0
+    },
+    {
+     "iso_time": "2024-05-24 18:00:00",
+     "lat": 17.0,
+     "lon": 89.9,
+     "wind_kt": 25.0,
+     "pres_hpa": 995.0,
+     "dist2land_km": 459.0,
+     "landfall": 449.0
+    },
+    {
+     "iso_time": "2024-05-24 21:00:00",
+     "lat": 17.2,
+     "lon": 89.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 449.0,
+     "landfall": 421.0
+    },
+    {
+     "iso_time": "2024-05-25 00:00:00",
+     "lat": 17.6,
+     "lon": 90.0,
+     "wind_kt": 30.0,
+     "pres_hpa": 993.0,
+     "dist2land_km": 413.0,
+     "landfall": 405.0
+    },
+    {
+     "iso_time": "2024-05-25 03:00:00",
+     "lat": 17.9,
+     "lon": 89.8,
+     "wind_kt": 30.0,
+     "pres_hpa": 992.0,
+     "dist2land_km": 406.0,
+     "landfall": 396.0
+    },
+    {
+     "iso_time": "2024-05-25 06:00:00",
+     "lat": 18.2,
+     "lon": 89.6,
+     "wind_kt": 30.0,
+     "pres_hpa": 991.0,
+     "dist2land_km": 385.0,
+     "landfall": 360.0
+    },
+    {
+     "iso_time": "2024-05-25 09:00:00",
+     "lat": 18.4,
+     "lon": 89.5,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 360.0,
+     "landfall": 332.0
+    },
+    {
+     "iso_time": "2024-05-25 12:00:00",
+     "lat": 18.7,
+     "lon": 89.3,
+     "wind_kt": 35.0,
+     "pres_hpa": 989.0,
+     "dist2land_km": 325.0,
+     "landfall": 302.0
+    },
+    {
+     "iso_time": "2024-05-25 15:00:00",
+     "lat": 18.9,
+     "lon": 89.2,
+     "wind_kt": 35.0,
+     "pres_hpa": 989.0,
+     "dist2land_km": 302.0,
+     "landfall": 268.0
+    },
+    {
+     "iso_time": "2024-05-25 18:00:00",
+     "lat": 19.2,
+     "lon": 89.2,
+     "wind_kt": 40.0,
+     "pres_hpa": 988.0,
+     "dist2land_km": 268.0,
+     "landfall": 246.0
+    },
+    {
+     "iso_time": "2024-05-25 21:00:00",
+     "lat": 19.4,
+     "lon": 89.2,
+     "wind_kt": 45.0,
+     "pres_hpa": 986.0,
+     "dist2land_km": 246.0,
+     "landfall": 223.0
+    },
+    {
+     "iso_time": "2024-05-26 00:00:00",
+     "lat": 19.6,
+     "lon": 89.2,
+     "wind_kt": 50.0,
+     "pres_hpa": 984.0,
+     "dist2land_km": 223.0,
+     "landfall": 190.0
+    },
+    {
+     "iso_time": "2024-05-26 03:00:00",
+     "lat": 19.9,
+     "lon": 89.1,
+     "wind_kt": 50.0,
+     "pres_hpa": 984.0,
+     "dist2land_km": 190.0,
+     "landfall": 156.0
+    },
+    {
+     "iso_time": "2024-05-26 06:00:00",
+     "lat": 20.3,
+     "lon": 89.1,
+     "wind_kt": 50.0,
+     "pres_hpa": 983.0,
+     "dist2land_km": 145.0,
+     "landfall": 111.0
+    },
+    {
+     "iso_time": "2024-05-26 09:00:00",
+     "lat": 20.6,
+     "lon": 89.1,
+     "wind_kt": 55.0,
+     "pres_hpa": 981.0,
+     "dist2land_km": 111.0,
+     "landfall": 55.0
+    },
+    {
+     "iso_time": "2024-05-26 12:00:00",
+     "lat": 21.2,
+     "lon": 89.1,
+     "wind_kt": 60.0,
+     "pres_hpa": 978.0,
+     "dist2land_km": 44.0,
+     "landfall": 11.0
+    },
+    {
+     "iso_time": "2024-05-26 14:00:00",
+     "lat": 21.5,
+     "lon": 89.0,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 11.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-26 15:00:00",
+     "lat": 21.6,
+     "lon": 89.0,
+     "wind_kt": 60.0,
+     "pres_hpa": 978.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-26 18:00:00",
+     "lat": 22.0,
+     "lon": 88.9,
+     "wind_kt": 60.0,
+     "pres_hpa": 978.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-26 21:00:00",
+     "lat": 22.2,
+     "lon": 88.9,
+     "wind_kt": 55.0,
+     "pres_hpa": 980.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 00:00:00",
+     "lat": 22.6,
+     "lon": 89.0,
+     "wind_kt": 45.0,
+     "pres_hpa": 982.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 03:00:00",
+     "lat": 22.8,
+     "lon": 89.1,
+     "wind_kt": 40.0,
+     "pres_hpa": 984.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 06:00:00",
+     "lat": 23.1,
+     "lon": 89.1,
+     "wind_kt": 35.0,
+     "pres_hpa": 985.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 09:00:00",
+     "lat": 23.3,
+     "lon": 89.3,
+     "wind_kt": 35.0,
+     "pres_hpa": 986.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 12:00:00",
+     "lat": 23.6,
+     "lon": 89.6,
+     "wind_kt": 35.0,
+     "pres_hpa": 987.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 15:00:00",
+     "lat": 23.8,
+     "lon": 90.1,
+     "wind_kt": 30.0,
+     "pres_hpa": 988.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 18:00:00",
+     "lat": 24.1,
+     "lon": 90.5,
+     "wind_kt": 30.0,
+     "pres_hpa": 990.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-27 21:00:00",
+     "lat": 24.3,
+     "lon": 90.8,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-28 00:00:00",
+     "lat": 24.5,
+     "lon": 91.1,
+     "wind_kt": 20.0,
+     "pres_hpa": 991.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-28 03:00:00",
+     "lat": 24.7,
+     "lon": 91.5,
+     "wind_kt": 20.0,
+     "pres_hpa": 992.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-05-28 06:00:00",
+     "lat": 25.1,
+     "lon": 91.8,
+     "wind_kt": 20.0,
+     "pres_hpa": 993.0,
+     "dist2land_km": 0.0,
+     "landfall": null
+    }
+   ]
+  },
+  {
+   "sid": "2024329N04089",
+   "name": "Fengal",
+   "basin": "NI",
+   "season": 2024,
+   "n_points": 87,
+   "track": [
+    {
+     "iso_time": "2024-11-23 18:00:00",
+     "lat": 3.6,
+     "lon": 88.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 724.0,
+     "landfall": 724.0
+    },
+    {
+     "iso_time": "2024-11-23 21:00:00",
+     "lat": 3.7,
+     "lon": 88.3,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 786.0,
+     "landfall": 745.0
+    },
+    {
+     "iso_time": "2024-11-24 00:00:00",
+     "lat": 3.7,
+     "lon": 87.8,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 745.0,
+     "landfall": 695.0
+    },
+    {
+     "iso_time": "2024-11-24 03:00:00",
+     "lat": 3.7,
+     "lon": 87.3,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 695.0,
+     "landfall": 641.0
+    },
+    {
+     "iso_time": "2024-11-24 06:00:00",
+     "lat": 3.8,
+     "lon": 86.8,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 641.0,
+     "landfall": 577.0
+    },
+    {
+     "iso_time": "2024-11-24 09:00:00",
+     "lat": 3.9,
+     "lon": 86.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 577.0,
+     "landfall": 515.0
+    },
+    {
+     "iso_time": "2024-11-24 12:00:00",
+     "lat": 4.0,
+     "lon": 85.6,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 515.0,
+     "landfall": 462.0
+    },
+    {
+     "iso_time": "2024-11-24 15:00:00",
+     "lat": 4.1,
+     "lon": 85.1,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 462.0,
+     "landfall": 420.0
+    },
+    {
+     "iso_time": "2024-11-24 18:00:00",
+     "lat": 4.2,
+     "lon": 84.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 420.0,
+     "landfall": 379.0
+    },
+    {
+     "iso_time": "2024-11-24 21:00:00",
+     "lat": 4.3,
+     "lon": 84.3,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 379.0,
+     "landfall": 346.0
+    },
+    {
+     "iso_time": "2024-11-25 00:00:00",
+     "lat": 4.3,
+     "lon": 83.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 346.0,
+     "landfall": 338.0
+    },
+    {
+     "iso_time": "2024-11-25 03:00:00",
+     "lat": 4.4,
+     "lon": 83.9,
+     "wind_kt": 20.0,
+     "pres_hpa": 1003.0,
+     "dist2land_km": 338.0,
+     "landfall": 299.0
+    },
+    {
+     "iso_time": "2024-11-25 06:00:00",
+     "lat": 4.6,
+     "lon": 83.6,
+     "wind_kt": 20.0,
+     "pres_hpa": 1003.0,
+     "dist2land_km": 299.0,
+     "landfall": 259.0
+    },
+    {
+     "iso_time": "2024-11-25 09:00:00",
+     "lat": 4.9,
+     "lon": 83.4,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 259.0,
+     "landfall": 236.0
+    },
+    {
+     "iso_time": "2024-11-25 12:00:00",
+     "lat": 5.2,
+     "lon": 83.3,
+     "wind_kt": 25.0,
+     "pres_hpa": 1002.0,
+     "dist2land_km": 229.0,
+     "landfall": 198.0
+    },
+    {
+     "iso_time": "2024-11-25 15:00:00",
+     "lat": 5.4,
+     "lon": 83.1,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 198.0,
+     "landfall": 184.0
+    },
+    {
+     "iso_time": "2024-11-25 18:00:00",
+     "lat": 5.6,
+     "lon": 83.1,
+     "wind_kt": 25.0,
+     "pres_hpa": 1002.0,
+     "dist2land_km": 184.0,
+     "landfall": 173.0
+    },
+    {
+     "iso_time": "2024-11-25 21:00:00",
+     "lat": 5.8,
+     "lon": 83.1,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 173.0,
+     "landfall": 161.0
+    },
+    {
+     "iso_time": "2024-11-26 00:00:00",
+     "lat": 6.1,
+     "lon": 83.1,
+     "wind_kt": 25.0,
+     "pres_hpa": 1002.0,
+     "dist2land_km": 161.0,
+     "landfall": 129.0
+    },
+    {
+     "iso_time": "2024-11-26 03:00:00",
+     "lat": 6.4,
+     "lon": 82.9,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 129.0,
+     "landfall": 112.0
+    },
+    {
+     "iso_time": "2024-11-26 06:00:00",
+     "lat": 6.8,
+     "lon": 82.9,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 112.0,
+     "landfall": 99.0
+    },
+    {
+     "iso_time": "2024-11-26 09:00:00",
+     "lat": 7.1,
+     "lon": 82.8,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 100.0,
+     "landfall": 100.0
+    },
+    {
+     "iso_time": "2024-11-26 12:00:00",
+     "lat": 7.3,
+     "lon": 82.8,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 104.0,
+     "landfall": 94.0
+    },
+    {
+     "iso_time": "2024-11-26 15:00:00",
+     "lat": 7.5,
+     "lon": 82.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 99.0,
+     "landfall": 99.0
+    },
+    {
+     "iso_time": "2024-11-26 18:00:00",
+     "lat": 7.8,
+     "lon": 82.6,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 101.0,
+     "landfall": 89.0
+    },
+    {
+     "iso_time": "2024-11-26 21:00:00",
+     "lat": 8.1,
+     "lon": 82.5,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 95.0,
+     "landfall": 90.0
+    },
+    {
+     "iso_time": "2024-11-27 00:00:00",
+     "lat": 8.3,
+     "lon": 82.4,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 94.0,
+     "landfall": 89.0
+    },
+    {
+     "iso_time": "2024-11-27 03:00:00",
+     "lat": 8.5,
+     "lon": 82.3,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 95.0,
+     "landfall": 95.0
+    },
+    {
+     "iso_time": "2024-11-27 06:00:00",
+     "lat": 8.7,
+     "lon": 82.3,
+     "wind_kt": 30.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 104.0,
+     "landfall": 94.0
+    },
+    {
+     "iso_time": "2024-11-27 09:00:00",
+     "lat": 8.8,
+     "lon": 82.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 98.0,
+     "landfall": 98.0
+    },
+    {
+     "iso_time": "2024-11-27 12:00:00",
+     "lat": 8.8,
+     "lon": 82.3,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 108.0,
+     "landfall": 108.0
+    },
+    {
+     "iso_time": "2024-11-27 15:00:00",
+     "lat": 8.9,
+     "lon": 82.5,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 133.0,
+     "landfall": 133.0
+    },
+    {
+     "iso_time": "2024-11-27 18:00:00",
+     "lat": 9.0,
+     "lon": 82.7,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 158.0,
+     "landfall": 158.0
+    },
+    {
+     "iso_time": "2024-11-27 21:00:00",
+     "lat": 9.1,
+     "lon": 82.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 163.0,
+     "landfall": 163.0
+    },
+    {
+     "iso_time": "2024-11-28 00:00:00",
+     "lat": 9.2,
+     "lon": 82.8,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 178.0,
+     "landfall": 178.0
+    },
+    {
+     "iso_time": "2024-11-28 03:00:00",
+     "lat": 9.2,
+     "lon": 83.0,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 197.0,
+     "landfall": 197.0
+    },
+    {
+     "iso_time": "2024-11-28 06:00:00",
+     "lat": 9.3,
+     "lon": 83.2,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 222.0,
+     "landfall": 222.0
+    },
+    {
+     "iso_time": "2024-11-28 09:00:00",
+     "lat": 9.4,
+     "lon": 83.3,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 237.0,
+     "landfall": 237.0
+    },
+    {
+     "iso_time": "2024-11-28 12:00:00",
+     "lat": 9.6,
+     "lon": 83.4,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 257.0,
+     "landfall": 257.0
+    },
+    {
+     "iso_time": "2024-11-28 15:00:00",
+     "lat": 9.9,
+     "lon": 83.5,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 285.0,
+     "landfall": 285.0
+    },
+    {
+     "iso_time": "2024-11-28 18:00:00",
+     "lat": 10.2,
+     "lon": 83.5,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 303.0,
+     "landfall": 298.0
+    },
+    {
+     "iso_time": "2024-11-28 21:00:00",
+     "lat": 10.5,
+     "lon": 83.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 295.0,
+     "landfall": 278.0
+    },
+    {
+     "iso_time": "2024-11-29 00:00:00",
+     "lat": 10.7,
+     "lon": 82.9,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 278.0,
+     "landfall": 267.0
+    },
+    {
+     "iso_time": "2024-11-29 03:00:00",
+     "lat": 10.9,
+     "lon": 82.7,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 274.0,
+     "landfall": 274.0
+    },
+    {
+     "iso_time": "2024-11-29 06:00:00",
+     "lat": 11.2,
+     "lon": 82.6,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 290.0,
+     "landfall": 259.0
+    },
+    {
+     "iso_time": "2024-11-29 09:00:00",
+     "lat": 11.4,
+     "lon": 82.3,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 259.0,
+     "landfall": 225.0
+    },
+    {
+     "iso_time": "2024-11-29 12:00:00",
+     "lat": 11.7,
+     "lon": 82.1,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 225.0,
+     "landfall": 196.0
+    },
+    {
+     "iso_time": "2024-11-29 15:00:00",
+     "lat": 11.9,
+     "lon": 81.8,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 186.0,
+     "landfall": 182.0
+    },
+    {
+     "iso_time": "2024-11-29 18:00:00",
+     "lat": 12.1,
+     "lon": 81.8,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 179.0,
+     "landfall": 155.0
+    },
+    {
+     "iso_time": "2024-11-29 21:00:00",
+     "lat": 12.2,
+     "lon": 81.6,
+     "wind_kt": 40.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 155.0,
+     "landfall": 121.0
+    },
+    {
+     "iso_time": "2024-11-30 00:00:00",
+     "lat": 12.4,
+     "lon": 81.3,
+     "wind_kt": 45.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 120.0,
+     "landfall": 98.0
+    },
+    {
+     "iso_time": "2024-11-30 03:00:00",
+     "lat": 12.4,
+     "lon": 81.0,
+     "wind_kt": 45.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 87.0,
+     "landfall": 76.0
+    },
+    {
+     "iso_time": "2024-11-30 06:00:00",
+     "lat": 12.3,
+     "lon": 80.9,
+     "wind_kt": 45.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 76.0,
+     "landfall": 58.0
+    },
+    {
+     "iso_time": "2024-11-30 09:00:00",
+     "lat": 12.3,
+     "lon": 80.7,
+     "wind_kt": 45.0,
+     "pres_hpa": 996.0,
+     "dist2land_km": 58.0,
+     "landfall": 39.0
+    },
+    {
+     "iso_time": "2024-11-30 12:00:00",
+     "lat": 12.3,
+     "lon": 80.5,
+     "wind_kt": 40.0,
+     "pres_hpa": 998.0,
+     "dist2land_km": 39.0,
+     "landfall": 31.0
+    },
+    {
+     "iso_time": "2024-11-30 15:00:00",
+     "lat": 12.2,
+     "lon": 80.3,
+     "wind_kt": 40.0,
+     "pres_hpa": 998.0,
+     "dist2land_km": 31.0,
+     "landfall": 15.0
+    },
+    {
+     "iso_time": "2024-11-30 18:00:00",
+     "lat": 12.1,
+     "lon": 80.1,
+     "wind_kt": 40.0,
+     "pres_hpa": 998.0,
+     "dist2land_km": 15.0,
+     "landfall": 10.0
+    },
+    {
+     "iso_time": "2024-11-30 21:00:00",
+     "lat": 12.1,
+     "lon": 80.0,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 10.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 00:00:00",
+     "lat": 12.1,
+     "lon": 79.9,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 03:00:00",
+     "lat": 12.0,
+     "lon": 79.8,
+     "wind_kt": 35.0,
+     "pres_hpa": 999.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 06:00:00",
+     "lat": 12.1,
+     "lon": 79.8,
+     "wind_kt": 30.0,
+     "pres_hpa": 1000.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 09:00:00",
+     "lat": 12.1,
+     "lon": 79.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 12:00:00",
+     "lat": 12.1,
+     "lon": 79.5,
+     "wind_kt": 25.0,
+     "pres_hpa": 1001.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 15:00:00",
+     "lat": 12.1,
+     "lon": 79.4,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 18:00:00",
+     "lat": 12.2,
+     "lon": 79.3,
+     "wind_kt": 25.0,
+     "pres_hpa": 1002.0,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-01 21:00:00",
+     "lat": 12.1,
+     "lon": 79.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 00:00:00",
+     "lat": 12.1,
+     "lon": 79.1,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 03:00:00",
+     "lat": 12.1,
+     "lon": 78.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 06:00:00",
+     "lat": 12.2,
+     "lon": 78.6,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 09:00:00",
+     "lat": 12.3,
+     "lon": 78.3,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 12:00:00",
+     "lat": 12.5,
+     "lon": 77.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 15:00:00",
+     "lat": 12.7,
+     "lon": 77.5,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 18:00:00",
+     "lat": 12.9,
+     "lon": 76.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-02 21:00:00",
+     "lat": 13.0,
+     "lon": 76.3,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-03 00:00:00",
+     "lat": 13.1,
+     "lon": 75.5,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 0.0,
+     "landfall": 0.0
+    },
+    {
+     "iso_time": "2024-12-03 03:00:00",
+     "lat": 13.2,
+     "lon": 74.6,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 15.0,
+     "landfall": 15.0
+    },
+    {
+     "iso_time": "2024-12-03 06:00:00",
+     "lat": 13.3,
+     "lon": 73.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 108.0,
+     "landfall": 108.0
+    },
+    {
+     "iso_time": "2024-12-03 09:00:00",
+     "lat": 13.5,
+     "lon": 72.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 204.0,
+     "landfall": 204.0
+    },
+    {
+     "iso_time": "2024-12-03 12:00:00",
+     "lat": 13.5,
+     "lon": 71.8,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 287.0,
+     "landfall": 287.0
+    },
+    {
+     "iso_time": "2024-12-03 15:00:00",
+     "lat": 13.2,
+     "lon": 71.4,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 342.0,
+     "landfall": 342.0
+    },
+    {
+     "iso_time": "2024-12-03 18:00:00",
+     "lat": 12.8,
+     "lon": 71.2,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 383.0,
+     "landfall": 383.0
+    },
+    {
+     "iso_time": "2024-12-03 21:00:00",
+     "lat": 12.5,
+     "lon": 71.0,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 411.0,
+     "landfall": 411.0
+    },
+    {
+     "iso_time": "2024-12-04 00:00:00",
+     "lat": 12.3,
+     "lon": 70.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 427.0,
+     "landfall": 427.0
+    },
+    {
+     "iso_time": "2024-12-04 03:00:00",
+     "lat": 12.2,
+     "lon": 70.7,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 450.0,
+     "landfall": 450.0
+    },
+    {
+     "iso_time": "2024-12-04 06:00:00",
+     "lat": 12.0,
+     "lon": 70.4,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 486.0,
+     "landfall": 486.0
+    },
+    {
+     "iso_time": "2024-12-04 09:00:00",
+     "lat": 11.7,
+     "lon": 70.1,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 525.0,
+     "landfall": 525.0
+    },
+    {
+     "iso_time": "2024-12-04 12:00:00",
+     "lat": 11.2,
+     "lon": 69.9,
+     "wind_kt": null,
+     "pres_hpa": null,
+     "dist2land_km": 562.0,
+     "landfall": null
+    }
+   ]
+  }
+ ]
+}

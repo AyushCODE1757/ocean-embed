@@ -4,8 +4,8 @@ import numpy as np
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..deps import get_provenance, get_store
-from ..schemas import HeatField, Provenance, Section
-from ..services import geo, heat
+from ..schemas import Cyclones, HeatField, Provenance, Section
+from ..services import cyclones, geo, heat
 from ..services.store import Store
 from ..settings import Settings, get_settings
 
@@ -91,3 +91,11 @@ def heat_field(
         values=_clean(field),
         provenance=prov,
     )
+
+
+@router.get("/cyclones", response_model=Cyclones)
+def list_cyclones(s: Settings = Depends(get_settings)) -> Cyclones:
+    try:
+        return cyclones.load(s)
+    except cyclones.CyclonesNotBuilt as exc:
+        raise HTTPException(503, str(exc)) from exc
