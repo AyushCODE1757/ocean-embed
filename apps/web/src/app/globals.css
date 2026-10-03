@@ -104,8 +104,9 @@ h1, h2, h3 { font-weight: 650; line-height: 1.15; margin: 0; letter-spacing: -0.
   max-width: 1280px; margin: 0 auto; padding: 0 var(--s5);
   height: 56px; display: flex; align-items: center; gap: var(--s5);
 }
-.brand { display: flex; align-items: baseline; gap: 10px; color: var(--text-1); font-weight: 700; font-size: 16px; letter-spacing: 0.01em; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text-1); font-weight: 700; font-size: 16px; letter-spacing: 0.01em; }
 .brand:hover { text-decoration: none; }
+.brand-logo { width: 26px; height: 26px; object-fit: contain; filter: drop-shadow(0 0 6px rgba(56,194,236,0.35)); }
 .brand-dot { width: 9px; height: 9px; border-radius: 50%; align-self: center;
   background: radial-gradient(circle at 35% 30%, #7fdcf7, var(--cyan) 60%, #0d5d80);
   box-shadow: 0 0 10px rgba(56, 194, 236, 0.65); }

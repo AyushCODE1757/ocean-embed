@@ -140,7 +140,25 @@ export default function OceanMap(props: OceanMapProps) {
   useEffect(() => {
     const map = mapRef.current;
     const canvas = canvasRef.current;
-    if (!map || !canvas || !props.particles) return;
+    if (!map || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    // wipe helper: erase any painted trails (transparent canvas over the map)
+    const wipe = () => {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0,0,0,1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    };
+
+    if (!props.particles) {
+      wipe(); // toggled off: clear the frozen trails instead of leaving them
+      return;
+    }
     const grid = props.particles;
     const rows = grid.length, cols = rows ? grid[0].length : 0;
     if (!rows || !cols) return;
@@ -151,7 +169,6 @@ export default function OceanMap(props: OceanMapProps) {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
     const resize = () => {
       if (!holder.current || !canvas) return;
       canvas.width = holder.current.clientWidth * dpr;
@@ -159,6 +176,12 @@ export default function OceanMap(props: OceanMapProps) {
     };
     resize();
     window.addEventListener("resize", resize);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+    wipe(); // fresh start (also clears trails from a previous grid/date)
+
+    let raf = 0;
+    let stopped = false;
 
     interface P { lon: number; lat: number; age: number }
     const N = 650;
@@ -181,19 +204,6 @@ export default function OceanMap(props: OceanMapProps) {
       return (v00 * (1 - tx) + v10 * tx) * (1 - ty) + (v01 * (1 - tx) + v11 * tx) * ty;
     };
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.scale(dpr, dpr);
-    let raf = 0;
-    let stopped = false;
-
-    const wipe = () => {
-      ctx.save();
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0,0,0,1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.restore();
-    };
     const reseedAll = () => { wipe(); for (let i = 0; i < N; i++) parts[i] = spawn(); };
     const onMove = () => reseedAll();
     map.on("move", onMove);

@@ -19,7 +19,8 @@ export default function Nav() {
     <header className="nav">
       <div className="nav-inner">
         <Link href="/" className="brand">
-          <span className="brand-dot" aria-hidden />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="" className="brand-logo" />
           OceanEmbed
           <span className="brand-sub">SIH26066</span>
         </Link>

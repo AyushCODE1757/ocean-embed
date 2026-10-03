@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import OceanMap from "@/components/map/OceanMap";
 import ProfileChart from "@/components/profile/ProfileChart";
+import Column3D from "@/components/profile/Column3D";
 import { ChipRow, Colorbar, DateSlider } from "@/components/controls/Controls";
 import { DataState, useMeta } from "@/components/feedback/DataState";
 import { api, cachedSlice, prefetchSlices, type Profile, type SliceField } from "@/lib/api-client";
@@ -40,6 +41,9 @@ export default function Explorer() {
   const [profileErr, setProfileErr] = useState<string | null>(null);
   const [projection, setProjection] = useState<"globe" | "mercator">("globe");
   const [particlesOn, setParticlesOn] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [showColumn, setShowColumn] = useState(true);
+  const [columnView, setColumnView] = useState<"profile" | "3d">("profile");
   const [cursor, setCursor] = useState<{ lat: number; lon: number; temp: number | null } | null>(null);
   const [grid, setGrid] = useState<(number | null)[][] | null>(null);
   const reqId = useRef(0);
@@ -144,7 +148,38 @@ export default function Explorer() {
         )}
       </div>
 
+      {/* persistent panel tabs (always on top of the map) */}
+      <div
+        style={{
+          position: "absolute", top: 12, left: "50%", transform: "translateX(-50%)",
+          zIndex: 15, display: "flex", gap: 4, padding: 4,
+          background: "rgba(5,14,24,0.72)", backdropFilter: "blur(10px)",
+          border: "1px solid var(--hairline)", borderRadius: 12,
+        }}
+        role="tablist"
+        aria-label="Panel visibility"
+      >
+        {([
+          ["Controls", showControls, () => setShowControls(!showControls)],
+          ["Water column", showColumn, () => setShowColumn(!showColumn)],
+        ] as const).map(([label, active, toggle]) => (
+          <button
+            key={label}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            className="chip"
+            data-active={active}
+            onClick={toggle}
+            style={{ fontSize: 13, padding: "5px 14px" }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* controls panel */}
+      {showControls && (
       <div className="float-panel tl panel panel-pad col" style={{ gap: 14 }}>
         {dates.length === 0 ? (
           <>
@@ -207,28 +242,51 @@ export default function Explorer() {
           </>
         )}
       </div>
+      )}
 
-      {/* profile panel */}
-      <div className="float-panel tr panel">
-        <div className="panel-head spread">
-          <b style={{ fontSize: 14 }}>Water column</b>
-          {point && (
-            <span className="num tiny">
-              {point.lat.toFixed(2)}°N {point.lon.toFixed(2)}°E{" "}
-              <button type="button" className="chip" onClick={downloadProfileCsv} title="Download profile as CSV">CSV</button>
+      {/* water column panel (profile chart or 3D cone) */}
+      {showColumn && (
+        <div className="float-panel tr panel">
+          <div className="panel-head spread">
+            <b style={{ fontSize: 14 }}>Water column</b>
+            <span className="row" style={{ gap: 8 }}>
+              {point && (
+                <span className="num tiny">
+                  {point.lat.toFixed(2)}°N {point.lon.toFixed(2)}°E{" "}
+                  <button type="button" className="chip" onClick={downloadProfileCsv} title="Download profile as CSV">CSV</button>
+                </span>
+              )}
             </span>
-          )}
+          </div>
+          <div className="panel-pad col" style={{ gap: 10 }}>
+            <div className="chip-row" role="radiogroup" aria-label="Water column view">
+              {([
+                ["profile", "Profile"],
+                ["3d", "3D column"],
+              ] as const).map(([v, label]) => (
+                <button
+                  key={v}
+                  type="button"
+                  role="radio"
+                  aria-checked={columnView === v}
+                  className="chip"
+                  data-active={columnView === v}
+                  onClick={() => setColumnView(v)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {profileErr ? (
+              <div className="note bad" style={{ margin: 0 }}>{profileErr}</div>
+            ) : columnView === "3d" ? (
+              <Column3D profile={profile} />
+            ) : (
+              <ProfileChart profile={profile} />
+            )}
+          </div>
         </div>
-        <div className="panel-pad">
-          {profileErr ? (
-            <div className="note bad" style={{ margin: 0 }}>{profileErr}</div>
-          ) : profile ? (
-            <ProfileChart profile={profile} />
-          ) : (
-            <ProfileChart profile={null} />
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 
