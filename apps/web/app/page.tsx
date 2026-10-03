@@ -45,6 +45,34 @@ function colorFor(value: number, min: number, max: number) {
   return [mix(0), mix(1), mix(2), 255] as const;
 }
 
+const IMAGE_COORDINATES: [[number, number], [number, number], [number, number], [number, number]] = [
+  [45, 30],
+  [105, 30],
+  [105, 5],
+  [45, 5],
+];
+
+function syncSliceImage(map: maplibregl.Map, canvas: HTMLCanvasElement) {
+  const url = canvas.toDataURL("image/png");
+  const source = map.getSource("slice-image") as maplibregl.ImageSource | undefined;
+  if (source) {
+    source.updateImage({ url });
+    return;
+  }
+  if (!map.isStyleLoaded()) return;
+
+  map.addSource("slice-image", {
+    type: "image",
+    url,
+    coordinates: IMAGE_COORDINATES,
+  });
+  map.addLayer({
+    id: "slice-layer",
+    type: "raster",
+    source: "slice-image",
+  });
+}
+
 export default function Page() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -57,6 +85,7 @@ export default function Page() {
   const [depth, setDepth] = useState<number>(0);
   const [selectedLatLon, setSelectedLatLon] = useState({ lat: 15.5, lon: 60.5 });
   const [sliceData, setSliceData] = useState<any>(null);
+  const [sliceError, setSliceError] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<any>(null);
   const [metrics, setMetrics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -86,12 +115,18 @@ export default function Page() {
   const loadSlice = useCallback(async () => {
     if (!currentDate) return;
     setLoading(true);
-    const response = await fetch(
-      `${API_BASE}/v1/slice?date=${encodeURIComponent(currentDate)}&depth=${depth}&field=${field}`,
-    );
-    const payload = await response.json();
-    setSliceData(payload);
-    setLoading(false);
+    setSliceError(null);
+    try {
+      const response = await fetch(
+        `${API_BASE}/v1/slice?date=${encodeURIComponent(currentDate)}&depth=${depth}&field=${field}`,
+      );
+      if (!response.ok) throw new Error(`Slice request failed (${response.status})`);
+      setSliceData(await response.json());
+    } catch (error) {
+      setSliceError(error instanceof Error ? error.message : "Unable to load this slice");
+    } finally {
+      setLoading(false);
+    }
   }, [currentDate, depth, field]);
 
   useEffect(() => {
@@ -129,16 +164,24 @@ export default function Page() {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: "https://demotiles.maplibre.org/style.json",
-      center: [75, 17.5],
-      zoom: 3.8,
+      center: [75, 17],
+      zoom: 3,
       attributionControl: { compact: true },
     });
-    map.fitBounds([
-      [45, 5],
-      [105, 30],
-    ]);
     mapRef.current = map;
-    return () => map.remove();
+    const syncImage = () => {
+      if (overlayRef.current) syncSliceImage(map, overlayRef.current);
+    };
+    map.on("load", syncImage);
+    const resizeObserver = new ResizeObserver(() => map.resize());
+    resizeObserver.observe(mapContainerRef.current);
+    requestAnimationFrame(() => map.resize());
+    return () => {
+      resizeObserver.disconnect();
+      map.off("load", syncImage);
+      map.remove();
+      if (mapRef.current === map) mapRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -148,39 +191,38 @@ export default function Page() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    const width = 101;
-    const height = 241;
+    const width = 241;
+    const height = 101;
+    if (sliceData.values.length !== height || sliceData.values.some((row: unknown[]) => row.length !== width)) {
+      setSliceError("Slice has an unexpected grid shape; expected 101 × 241.");
+      return;
+    }
+    canvas.width = width;
+    canvas.height = height;
     const imageData = context.createImageData(width, height);
     const values = sliceData.values.flat();
-    const finiteValues = values.filter((value: number | null) => value !== null && Number.isFinite(value));
-    const min = finiteValues.length ? Math.min(...finiteValues) : 0;
-    const max = finiteValues.length ? Math.max(...finiteValues) : 1;
+    const finiteValues = values.filter((value: number | null) => value !== null && Number.isFinite(value)).sort((a: number, b: number) => a - b);
+    const percentile = (fraction: number) => finiteValues[Math.floor((finiteValues.length - 1) * fraction)];
+    const min = finiteValues.length ? percentile(0.02) : 0;
+    const max = finiteValues.length ? percentile(0.98) : 1;
 
-    values.forEach((value: number | null, index: number) => {
-      const rawIndex = index * 4;
-      if (value === null || !Number.isFinite(value)) {
-        imageData.data[rawIndex] = 255;
-        imageData.data[rawIndex + 1] = 255;
-        imageData.data[rawIndex + 2] = 255;
-        imageData.data[rawIndex + 3] = 0;
-        return;
-      }
-      const [r, g, b, a] = colorFor(value, min, max);
-      imageData.data[rawIndex] = r;
-      imageData.data[rawIndex + 1] = g;
-      imageData.data[rawIndex + 2] = b;
-      imageData.data[rawIndex + 3] = a;
+    sliceData.values.forEach((row: (number | null)[], latitudeIndex: number) => {
+      row.forEach((value, longitudeIndex) => {
+        const pixelIndex = ((height - 1 - latitudeIndex) * width + longitudeIndex) * 4;
+        if (value === null || !Number.isFinite(value)) {
+          imageData.data[pixelIndex + 3] = 0;
+          return;
+        }
+        const [r, g, b, a] = colorFor(value, min, max);
+        imageData.data[pixelIndex] = r;
+        imageData.data[pixelIndex + 1] = g;
+        imageData.data[pixelIndex + 2] = b;
+        imageData.data[pixelIndex + 3] = a;
+      });
     });
 
-    const offscreen = document.createElement("canvas");
-    offscreen.width = width;
-    offscreen.height = height;
-    const offscreenCtx = offscreen.getContext("2d");
-    if (!offscreenCtx) return;
-    offscreenCtx.putImageData(imageData, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.imageSmoothingEnabled = false;
-    context.drawImage(offscreen, 0, 0, canvas.width, canvas.height);
+    context.putImageData(imageData, 0, 0);
+    if (mapRef.current) syncSliceImage(mapRef.current, canvas);
   }, [sliceData]);
 
   const profileTrace = useMemo<any[]>(() => {
@@ -222,14 +264,7 @@ export default function Page() {
     yaxis: { autorange: "reversed", title: { text: "Depth (m)" } },
   }), [meta?.units]);
 
-  useEffect(() => {
-    if (!overlayRef.current || !sliceData) return;
-    const canvas = overlayRef.current;
-    canvas.width = 101;
-    canvas.height = 241;
-  }, [sliceData]);
-
-  const onCanvasClick = (event: MouseEvent<HTMLCanvasElement>) => {
+  const onMapClick = (event: MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width;
     const y = (event.clientY - rect.top) / rect.height;
@@ -296,20 +331,13 @@ export default function Page() {
       <main className="main-grid">
         <section className="panel map-panel">
           <div className="map-shell">
-            <div ref={mapContainerRef} className="map-box" />
-            <div className="map-overlay">
-              <canvas
-                ref={overlayRef}
-                width={101}
-                height={241}
-                onClick={onCanvasClick}
-                style={{ width: "100%", height: "100%" }}
-              />
-            </div>
+            <div ref={mapContainerRef} className="map-box" onClick={onMapClick} />
+            <canvas ref={overlayRef} width={241} height={101} className="map-data-canvas" />
+            {sliceError ? <div className="map-error" role="alert">{sliceError}</div> : null}
           </div>
           <div style={{ padding: "0.8rem 1rem 1rem" }}>
             <div className="legend">
-              <span>{sliceData?.field ?? field}</span>
+              <span>{FIELD_LABELS[field]}</span>
               <div className="legend-bar" />
               <span>{meta?.units ?? "degC"}</span>
             </div>
