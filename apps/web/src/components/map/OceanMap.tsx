@@ -16,6 +16,9 @@ setWorkerUrl("/maplibre-gl-worker.mjs");
 export interface OceanMapProps {
   field?: string | null; // dataURL of the raster (cols x rows, south-first rows)
   lon0: number; lat0: number; lon1: number; lat1: number;
+  values?: (number | null)[][]; // raw grid for the cursor readout (south-first rows)
+  onHover?: (r: { lat: number; lon: number; temp: number | null } | null) => void;
+  projection?: "globe" | "mercator";
   argo?: ArgoObservation[];
   track?: TrackPoint[];
   marker?: { lat: number; lon: number } | null;
@@ -41,6 +44,20 @@ export default function OceanMap(props: OceanMapProps) {
   const readyRef = useRef(false);
   const cbRef = useRef(props.onPoint);
   cbRef.current = props.onPoint;
+  const hoverRef = useRef(props.onHover);
+  hoverRef.current = props.onHover;
+  const valsRef = useRef(props.values);
+  valsRef.current = props.values;
+  const boxRef = useRef({ lon0: props.lon0, lat0: props.lat0, lon1: props.lon1, lat1: props.lat1 });
+  boxRef.current = { lon0: props.lon0, lat0: props.lat0, lon1: props.lon1, lat1: props.lat1 };
+  const projRef = useRef(props.projection);
+  projRef.current = props.projection;
+
+  const applyProjection = (map: MlMap) => {
+    try {
+      map.setProjection({ type: projRef.current === "globe" ? "globe" : "mercator" });
+    } catch { /* style without projection support */ }
+  };
 
   // create map once
   useEffect(() => {
@@ -58,6 +75,7 @@ export default function OceanMap(props: OceanMapProps) {
     mapRef.current = map;
     map.on("load", () => {
       readyRef.current = true;
+      applyProjection(map);
       map.addSource("field", {
         type: "image",
         url: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
@@ -87,9 +105,31 @@ export default function OceanMap(props: OceanMapProps) {
     map.on("click", (e) => {
       cbRef.current?.(Number(e.lngLat.lat.toFixed(3)), Number(e.lngLat.lng.toFixed(3)));
     });
+    map.on("mousemove", (e) => {
+      const vals = valsRef.current;
+      if (!vals || !hoverRef.current) return;
+      const { lon0, lat0, lon1, lat1 } = boxRef.current;
+      const { lat, lng } = e.lngLat;
+      if (lat < lat0 || lat > lat1 || lng < lon0 || lng > lon1) {
+        hoverRef.current(null);
+        return;
+      }
+      const rows = vals.length, cols = rows ? vals[0].length : 0;
+      const r = Math.min(rows - 1, Math.max(0, Math.round(((lat - lat0) / (lat1 - lat0)) * (rows - 1))));
+      const c = Math.min(cols - 1, Math.max(0, Math.round(((lng - lon0) / (lon1 - lon0)) * (cols - 1))));
+      hoverRef.current({ lat, lon: lng, temp: vals[r][c] });
+    });
+    map.on("mouseout", () => hoverRef.current?.(null));
     return () => { map.remove(); mapRef.current = null; readyRef.current = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // projection toggle (globe / flat)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !readyRef.current || !props.projection) return;
+    applyProjection(map);
+  }, [props.projection]);
 
   // repaint when props change
   useEffect(() => {
@@ -105,7 +145,20 @@ export default function OceanMap(props: OceanMapProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.field, props.argo, props.track, props.marker]);
 
-  return <div ref={holder} className="map-fill" role="application" aria-label="Interactive ocean map" />;
+  return (
+    <div ref={holder} className="map-fill" role="application" aria-label="Interactive ocean map">
+      <div
+        style={{
+          position: "absolute", left: 10, bottom: 6, zIndex: 5, pointerEvents: "none",
+          fontSize: 10.5, color: "rgba(157,184,210,0.85)", letterSpacing: "0.02em",
+          textShadow: "0 1px 4px rgba(2,8,15,0.9)",
+        }}
+      >
+        Field: OceanEmbed reconstruction (GLORYS12-trained) · Basemap ©{" "}
+        OpenStreetMap contributors, © CARTO
+      </div>
+    </div>
+  );
 }
 
 function paint(map: MlMap, p: OceanMapProps) {

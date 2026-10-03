@@ -26,8 +26,9 @@ export default function Landing() {
         if (!on) return;
         const flat = s.values.flat().filter((v): v is number => v !== null);
         const { lo, hi } = stretch(flat);
-        // grid rows run south-first; flip so north is up in the hero art
-        setHeroArt(fieldToDataURL([...s.values].reverse(), { ramp: rampFor("model"), lo, hi }));
+        // grid rows run south-first; flip so north is up in the hero art.
+        // 8x stepped bilinear so the coastline is antialiased at hero size.
+        setHeroArt(fieldToDataURL([...s.values].reverse(), { ramp: rampFor("model"), lo, hi, smooth: 8 }));
       })
       .catch(() => {});
     return () => { on = false; };

@@ -71,10 +71,14 @@ export function stretch(values: number[]): { lo: number; hi: number } {
   return hi > lo ? { lo, hi } : { lo, hi: lo + 1e-6 };
 }
 
-/* Render a [rows][cols] grid of values to a dataURL (cols x rows canvas). */
+/* Render a [rows][cols] grid of values to a dataURL.
+   `smooth` = stepped bilinear upscale factor: the grid is 241x101, and
+   nearest-neighbor stretching looks blocky — two or three halving steps of
+   high-quality canvas resampling give the smooth nullschool-style field.
+   Rows are expected south-first for map use (flipped by the caller). */
 export function fieldToDataURL(
   values: (number | null)[][],
-  opts: { ramp: Ramp; lo: number; hi: number },
+  opts: { ramp: Ramp; lo: number; hi: number; smooth?: number },
 ): string {
   const rows = values.length;
   const cols = rows ? values[0].length : 0;
@@ -102,7 +106,24 @@ export function fieldToDataURL(
     }
   }
   ctx.putImageData(img, 0, 0);
-  return canvas.toDataURL();
+  const factor = opts.smooth ?? 4;
+  if (factor <= 1) return canvas.toDataURL();
+  let src: HTMLCanvasElement = canvas;
+  let grown = 1;
+  while (grown < factor) {
+    const step = Math.min(2, factor / grown);
+    const next = document.createElement("canvas");
+    next.width = Math.round(cols * grown * step);
+    next.height = Math.round(rows * grown * step);
+    const nctx = next.getContext("2d");
+    if (!nctx) break;
+    nctx.imageSmoothingEnabled = true;
+    nctx.imageSmoothingQuality = "high";
+    nctx.drawImage(src, 0, 0, next.width, next.height);
+    src = next;
+    grown *= step;
+  }
+  return src.toDataURL();
 }
 
 export function niceTicks(lo: number, hi: number, count = 5): number[] {
