@@ -1,0 +1,35 @@
+{
+ "lat0": 5,
+ "lon0": 45,
+ "step": 0.25,
+ "shape": [
+  101,
+  241
+ ],
+ "scale": 0.01,
+ "nodata": -32768,
+ "units": "degC",
+ "depths": [
+  0,
+  5,
+  10,
+  20,
+  30,
+  50,
+  75,
+  100,
+  125,
+  150,
+  200,
+  300,
+  500,
+  700,
+  1000
+ ],
+ "split": "test",
+ "every_n_days": 2,
+ "train_years": "2019-2022",
+ "val_year": 2023,
+ "test_years": "2024-2025",
+ "notes": "SSS 2025 is near-real-time; ARMOR3D 2025 is NRT; Argo 2024-2025 mixes real-time and delayed-mode"
+}
