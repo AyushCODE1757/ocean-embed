@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
@@ -76,6 +76,7 @@ function syncSliceImage(map: maplibregl.Map, canvas: HTMLCanvasElement) {
 export default function Page() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const markerRef = useRef<maplibregl.Marker | null>(null);
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
 
   const [meta, setMeta] = useState<any>(null);
@@ -163,30 +164,63 @@ export default function Page() {
     if (!mapContainerRef.current || mapRef.current) return;
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: "https://demotiles.maplibre.org/style.json",
+      style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
       center: [75, 17],
       zoom: 3,
       attributionControl: { compact: true },
     });
     mapRef.current = map;
-    const syncImage = () => {
+    const onStyleLoad = () => {
+      for (const layer of map.getStyle().layers) {
+        if (layer.type !== "line" || !/admin|boundary|country/i.test(layer.id)) continue;
+        map.setPaintProperty(layer.id, "line-color", "#aeb7bb");
+        map.setPaintProperty(layer.id, "line-opacity", 0.45);
+      }
       if (overlayRef.current) syncSliceImage(map, overlayRef.current);
     };
-    map.on("load", syncImage);
+    const onMapClick = (event: maplibregl.MapMouseEvent) => {
+      const { lat, lng } = event.lngLat;
+      setSelectedLatLon({ lat, lon: lng });
+      if (markerRef.current) {
+        markerRef.current.setLngLat(event.lngLat);
+      } else {
+        markerRef.current = new maplibregl.Marker({ color: "#db5948" })
+          .setLngLat(event.lngLat)
+          .addTo(map);
+      }
+    };
+    map.on("load", onStyleLoad);
+    map.on("click", onMapClick);
     const resizeObserver = new ResizeObserver(() => map.resize());
     resizeObserver.observe(mapContainerRef.current);
     requestAnimationFrame(() => map.resize());
     return () => {
       resizeObserver.disconnect();
-      map.off("load", syncImage);
+      map.off("load", onStyleLoad);
+      map.off("click", onMapClick);
+      markerRef.current?.remove();
+      markerRef.current = null;
       map.remove();
       if (mapRef.current === map) mapRef.current = null;
     };
   }, []);
 
+  const colorRange = useMemo(() => {
+    if (!sliceData?.values) return null;
+    const finiteValues = sliceData.values
+      .flat()
+      .filter((value: number | null) => value !== null && Number.isFinite(value))
+      .sort((a: number, b: number) => a - b);
+    if (!finiteValues.length) return { min: 0, max: 1 };
+    return {
+      min: finiteValues[Math.floor((finiteValues.length - 1) * 0.02)],
+      max: finiteValues[Math.floor((finiteValues.length - 1) * 0.98)],
+    };
+  }, [sliceData]);
+
   useEffect(() => {
     const canvas = overlayRef.current;
-    if (!canvas || !sliceData) return;
+    if (!canvas || !sliceData || !colorRange) return;
 
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -200,11 +234,6 @@ export default function Page() {
     canvas.width = width;
     canvas.height = height;
     const imageData = context.createImageData(width, height);
-    const values = sliceData.values.flat();
-    const finiteValues = values.filter((value: number | null) => value !== null && Number.isFinite(value)).sort((a: number, b: number) => a - b);
-    const percentile = (fraction: number) => finiteValues[Math.floor((finiteValues.length - 1) * fraction)];
-    const min = finiteValues.length ? percentile(0.02) : 0;
-    const max = finiteValues.length ? percentile(0.98) : 1;
 
     sliceData.values.forEach((row: (number | null)[], latitudeIndex: number) => {
       row.forEach((value, longitudeIndex) => {
@@ -213,7 +242,7 @@ export default function Page() {
           imageData.data[pixelIndex + 3] = 0;
           return;
         }
-        const [r, g, b, a] = colorFor(value, min, max);
+        const [r, g, b, a] = colorFor(value, colorRange.min, colorRange.max);
         imageData.data[pixelIndex] = r;
         imageData.data[pixelIndex + 1] = g;
         imageData.data[pixelIndex + 2] = b;
@@ -223,7 +252,7 @@ export default function Page() {
 
     context.putImageData(imageData, 0, 0);
     if (mapRef.current) syncSliceImage(mapRef.current, canvas);
-  }, [sliceData]);
+  }, [colorRange, sliceData]);
 
   const profileTrace = useMemo<any[]>(() => {
     if (!profileData) return [];
@@ -252,6 +281,18 @@ export default function Page() {
         name: "Climatology",
         line: { color: "#7ae582" },
       },
+      ...(profileData.argo?.length
+        ? [{
+            x: profileData.argo.map((observation: any) => observation.temp_c),
+            y: profileData.argo.map((observation: any) => observation.depth_m),
+            mode: "markers",
+            type: "scatter",
+            name: "Argo",
+            text: profileData.argo.map((observation: any) => observation.time),
+            hovertemplate: "%{x:.2f} degC<br>%{y:.1f} m<br>%{text}<extra>Argo</extra>",
+            marker: { color: "#ff725e", size: 7, line: { color: "#fff4ef", width: 1 } },
+          }]
+        : []),
     ];
   }, [profileData]);
 
@@ -263,15 +304,6 @@ export default function Page() {
     xaxis: { title: meta?.units ?? "degC", showgrid: true },
     yaxis: { autorange: "reversed", title: { text: "Depth (m)" } },
   }), [meta?.units]);
-
-  const onMapClick = (event: MouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    const lon = 45 + x * 60;
-    const lat = 30 - y * 25;
-    setSelectedLatLon({ lat, lon });
-  };
 
   const currentDepth = sliceData?.depth ?? depth;
   const skillBadge = currentDepth >= 500 ? "Low skill below 300 m - near-climatological" : null;
@@ -331,15 +363,24 @@ export default function Page() {
       <main className="main-grid">
         <section className="panel map-panel">
           <div className="map-shell">
-            <div ref={mapContainerRef} className="map-box" onClick={onMapClick} />
+            <div ref={mapContainerRef} className="map-box" />
             <canvas ref={overlayRef} width={241} height={101} className="map-data-canvas" />
             {sliceError ? <div className="map-error" role="alert">{sliceError}</div> : null}
           </div>
           <div style={{ padding: "0.8rem 1rem 1rem" }}>
             <div className="legend">
               <span>{FIELD_LABELS[field]}</span>
-              <div className="legend-bar" />
-              <span>{meta?.units ?? "degC"}</span>
+              <div className="legend-scale" aria-label="Color scale">
+                <div className="legend-labels">
+                  <span>{colorRange ? `${colorRange.min.toFixed(1)} ${meta?.units ?? "degC"}` : "—"}</span>
+                  <span>{colorRange ? `${colorRange.max.toFixed(1)} ${meta?.units ?? "degC"}` : "—"}</span>
+                </div>
+                <div className="legend-bar">
+                  {[25, 50, 75].map((position) => (
+                    <span key={position} className="legend-tick" style={{ left: `${position}%` }} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -357,6 +398,9 @@ export default function Page() {
                 style={{ width: "100%", height: 340 }}
                 config={{ displayModeBar: false, responsive: true }}
               />
+            ) : null}
+            {profileData && !profileData.argo?.length ? (
+              <div className="argo-empty">No Argo profile within 1 deg / 5 days</div>
             ) : null}
           </div>
 

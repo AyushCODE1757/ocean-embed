@@ -191,11 +191,44 @@ select {
   margin-top: 0.7rem;
 }
 
-.legend-bar {
+.legend-scale {
+  display: grid;
   flex: 1;
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.legend-bar {
+  position: relative;
   height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #2d5d8c 0%, #4e9fe0 16%, #8fe1d0 33%, #f4ec9d 50%, #f5b86e 67%, #d35d4d 82%, #7a2c38 100%);
+  border-radius: 5px;
+  background: linear-gradient(90deg, #2d5d8c 0%, #4ba2e0 16.67%, #8fe1d0 33.33%, #f4ec9d 50%, #f5b86e 66.67%, #d35d4d 83.33%, #7a2c38 100%);
+}
+
+.legend-tick {
+  position: absolute;
+  top: -2px;
+  width: 1px;
+  height: 14px;
+  background: #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+.argo-empty {
+  margin: 0 0.25rem 0.5rem;
+  padding: 0.3rem 0.55rem;
+  border-left: 2px solid var(--warn);
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 
 .meta-box {
