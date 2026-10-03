@@ -25,6 +25,7 @@ export default function Compare() {
   const [depth, setDepth] = useState(100);
   const [playing, setPlaying] = useState(false);
   const [views, setViews] = useState<Record<string, { url: string; lo: number; hi: number } | null>>({});
+  const [stats, setStats] = useState<Record<string, { mean: number; n: number }>>({});
   const [failed, setFailed] = useState<string | null>(null);
 
   const date = dates[dateIdx] ?? "";
@@ -33,19 +34,24 @@ export default function Compare() {
     if (!date || !meta) return;
     let on = true;
     setViews({});
+    setStats({});
     Promise.all(
       PANELS.map(async (p) => {
         const s = await cachedSlice(date, depth, p.field);
         const flat = s.values.flat().filter((v): v is number => v !== null);
         const r = p.field === "error" ? symmetric(flat) : stretch(flat);
+        const mean = flat.reduce((a, b) => a + b, 0) / (flat.length || 1);
         return [p.field, {
           url: fieldToDataURL([...s.values].reverse(), { ramp: rampFor(p.field), lo: r.lo, hi: r.hi }),
-          lo: r.lo, hi: r.hi,
+          lo: r.lo, hi: r.hi, mean, nValid: flat.length,
         }] as const;
       }),
     )
       .then((pairs) => {
-        if (on) setViews(Object.fromEntries(pairs));
+        if (on) {
+          setViews(Object.fromEntries(pairs.map(([k, v]) => [k, { url: v.url, lo: v.lo, hi: v.hi }])));
+          setStats(Object.fromEntries(pairs.map(([k, v]) => [k, { mean: v.mean, n: v.nValid }])));
+        }
       })
       .catch((e) => on && setFailed(String(e?.message ?? e)));
     return () => { on = false; };
@@ -74,13 +80,14 @@ export default function Compare() {
       <div className="row wrap" style={{ gap: "var(--s4)", alignItems: "stretch" }}>
         {PANELS.map((p) => {
           const v = views[p.field];
+          const st = stats[p.field];
           return (
-            <div key={p.field} className="panel" style={{ flex: "1 1 300px", overflow: "hidden" }}>
+            <div key={p.field} className="panel" style={{ flex: "1 1 430px", overflow: "hidden" }}>
               <div className="panel-head spread">
-                <b style={{ fontSize: 14 }}>{p.title}</b>
+                <b style={{ fontSize: 15 }}>{p.title}</b>
                 <span className="badge">{p.note}</span>
               </div>
-              <div style={{ position: "relative", height: 260 }}>
+              <div style={{ position: "relative", height: 360 }}>
                 <OceanMap
                   field={v?.url ?? null}
                   lon0={meta?.lon[0] ?? 45} lat0={meta?.lat[0] ?? 5}
@@ -89,18 +96,20 @@ export default function Compare() {
                 />
                 {!v && <div className="skeleton" style={{ position: "absolute", inset: 12 }} />}
               </div>
-              <div className="panel-pad" style={{ paddingTop: 10 }}>
+              <div className="panel-pad col" style={{ paddingTop: 10, gap: 6 }}>
                 {v && <Colorbar field={p.field} lo={v.lo} hi={v.hi} units="°C" />}
+                {st && (
+                  <p className="tiny num" style={{ margin: 0 }}>
+                    {p.field === "error"
+                      ? <>area-mean bias {st.mean >= 0 ? "+" : ""}{st.mean.toFixed(2)} °C over {st.n.toLocaleString("en-IN")} wet cells · {fmtDate(date)} · {depth} m</>
+                      : <>domain mean {st.mean.toFixed(2)} °C over {st.n.toLocaleString("en-IN")} wet cells · {fmtDate(date)} · {depth} m</>}
+                  </p>
+                )}
               </div>
             </div>
           );
         })}
       </div>
-      <p className="tiny" style={{ marginTop: "var(--s3)" }}>
-        The error panel is where the honest story lives: warm bias through the thermocline
-        (~+0.8 °C against Argo at 100–125 m), largest errors in the southern bay, and land-adjacent
-        shelves where GLORYS itself is least constrained.
-      </p>
     </div>
   );
 }

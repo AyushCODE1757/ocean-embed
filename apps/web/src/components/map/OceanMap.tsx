@@ -19,6 +19,10 @@ export interface OceanMapProps {
   values?: (number | null)[][]; // raw grid for the cursor readout (south-first rows)
   onHover?: (r: { lat: number; lon: number; temp: number | null } | null) => void;
   projection?: "globe" | "mercator";
+  /* when set, drifting particles trace thermal fronts: they move along
+     isotherms (perpendicular to grad T), speed proportional to front strength.
+     A visualisation of the temperature field's structure - not a flow field. */
+  particles?: (number | null)[][] | null;
   argo?: ArgoObservation[];
   track?: TrackPoint[];
   marker?: { lat: number; lon: number } | null;
@@ -42,6 +46,7 @@ export default function OceanMap(props: OceanMapProps) {
   const holder = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MlMap | null>(null);
   const readyRef = useRef(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cbRef = useRef(props.onPoint);
   cbRef.current = props.onPoint;
   const hoverRef = useRef(props.onHover);
@@ -70,7 +75,7 @@ export default function OceanMap(props: OceanMapProps) {
       minZoom: 2.5,
       maxZoom: 9,
       interactive: props.interactive !== false,
-      attributionControl: { compact: true },
+      attributionControl: false, // credit lives in our styled line below
     });
     mapRef.current = map;
     map.on("load", () => {
@@ -131,6 +136,131 @@ export default function OceanMap(props: OceanMapProps) {
     applyProjection(map);
   }, [props.projection]);
 
+  // thermal-front particle drift (isotherm tracing on the current grid)
+  useEffect(() => {
+    const map = mapRef.current;
+    const canvas = canvasRef.current;
+    if (!map || !canvas || !props.particles) return;
+    const grid = props.particles;
+    const rows = grid.length, cols = rows ? grid[0].length : 0;
+    if (!rows || !cols) return;
+    const { lon0, lat0, lon1, lat1 } = boxRef.current;
+
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const resize = () => {
+      if (!holder.current || !canvas) return;
+      canvas.width = holder.current.clientWidth * dpr;
+      canvas.height = holder.current.clientHeight * dpr;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    interface P { lon: number; lat: number; age: number }
+    const N = 650;
+    const spawn = (): P => ({
+      lon: lon0 + Math.random() * (lon1 - lon0),
+      lat: lat0 + Math.random() * (lat1 - lat0),
+      age: Math.random() * 140,
+    });
+    const parts: P[] = Array.from({ length: N }, spawn);
+
+    const sample = (lon: number, lat: number): number | null => {
+      if (lat < lat0 || lat > lat1 || lon < lon0 || lon > lon1) return null;
+      const fx = ((lon - lon0) / (lon1 - lon0)) * (cols - 1);
+      const fy = ((lat - lat0) / (lat1 - lat0)) * (rows - 1);
+      const x0 = Math.floor(fx), y0 = Math.floor(fy);
+      const x1 = Math.min(cols - 1, x0 + 1), y1 = Math.min(rows - 1, y0 + 1);
+      const tx = fx - x0, ty = fy - y0;
+      const v00 = grid[y0][x0], v10 = grid[y0][x1], v01 = grid[y1][x0], v11 = grid[y1][x1];
+      if (v00 === null || v10 === null || v01 === null || v11 === null) return null;
+      return (v00 * (1 - tx) + v10 * tx) * (1 - ty) + (v01 * (1 - tx) + v11 * tx) * ty;
+    };
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.scale(dpr, dpr);
+    let raf = 0;
+    let stopped = false;
+
+    const wipe = () => {
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0,0,0,1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    };
+    const reseedAll = () => { wipe(); for (let i = 0; i < N; i++) parts[i] = spawn(); };
+    const onMove = () => reseedAll();
+    map.on("move", onMove);
+
+    const STEP = 0.06; // degrees per frame along the isotherm
+    const frame = () => {
+      if (stopped) return;
+      if (document.hidden || !readyRef.current) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      // fade previous trails (keep transparency over the map)
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0,0,0,0.055)";
+      ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.lineWidth = 1.1;
+      ctx.strokeStyle = "rgba(140,220,250,0.5)";
+      ctx.beginPath();
+      for (const p of parts) {
+        const t = sample(p.lon, p.lat);
+        if (t === null || p.age > 130) {
+          Object.assign(p, spawn());
+          continue;
+        }
+        const d = 0.35; // gradient probe distance in degrees
+        const tx0 = sample(p.lon + d, p.lat), tx1 = sample(p.lon - d, p.lat);
+        const ty0 = sample(p.lon, p.lat + d), ty1 = sample(p.lon, p.lat - d);
+        if (tx0 === null || tx1 === null || ty0 === null || ty1 === null) {
+          Object.assign(p, spawn());
+          continue;
+        }
+        const gx = (tx0 - tx1) / (2 * d); // dT/dlon
+        const gy = (ty0 - ty1) / (2 * d); // dT/dlat
+        const mag = Math.hypot(gx, gy);
+        if (mag < 0.012) { // flat water: nothing to trace here
+          Object.assign(p, spawn());
+          continue;
+        }
+        // isotherm tangent = perpendicular to the gradient
+        const ux = -gy / mag, uy = gx / mag;
+        const speed = STEP * Math.min(2.4, 0.55 + mag * 22);
+        const nlon = p.lon + ux * speed;
+        const nlat = p.lat + uy * speed;
+        const a = map.project([p.lon, p.lat]);
+        const b = map.project([nlon, nlat]);
+        if (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) < 50) {
+          ctx.moveTo(a.x / dpr, a.y / dpr);
+          ctx.lineTo(b.x / dpr, b.y / dpr);
+        }
+        p.lon = nlon;
+        p.lat = nlat;
+        p.age += 1;
+      }
+      ctx.stroke();
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+
+    return () => {
+      stopped = true;
+      cancelAnimationFrame(raf);
+      map.off("move", onMove);
+      window.removeEventListener("resize", resize);
+    };
+  }, [props.particles]);
+
   // repaint when props change
   useEffect(() => {
     const map = mapRef.current;
@@ -149,14 +279,19 @@ export default function OceanMap(props: OceanMapProps) {
     <div ref={holder} className="map-fill" role="application" aria-label="Interactive ocean map">
       <div
         style={{
-          position: "absolute", left: 10, bottom: 6, zIndex: 5, pointerEvents: "none",
-          fontSize: 10.5, color: "rgba(157,184,210,0.85)", letterSpacing: "0.02em",
+          position: "absolute", left: 10, bottom: 8, zIndex: 5, pointerEvents: "none",
+          fontSize: 10, lineHeight: 1.5, maxWidth: "78%",
+          color: "rgba(157,184,210,0.8)", letterSpacing: "0.02em",
           textShadow: "0 1px 4px rgba(2,8,15,0.9)",
         }}
       >
-        Field: OceanEmbed reconstruction (GLORYS12-trained) · Basemap ©{" "}
-        OpenStreetMap contributors, © CARTO
+        Field: OceanEmbed (GLORYS12-trained) · Basemap © OpenStreetMap contributors, © CARTO
       </div>
+      <canvas
+        ref={canvasRef}
+        style={{ position: "absolute", inset: 0, zIndex: 4, pointerEvents: "none" }}
+        aria-hidden
+      />
     </div>
   );
 }

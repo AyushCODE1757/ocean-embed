@@ -39,6 +39,7 @@ export default function Explorer() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileErr, setProfileErr] = useState<string | null>(null);
   const [projection, setProjection] = useState<"globe" | "mercator">("globe");
+  const [particlesOn, setParticlesOn] = useState(false);
   const [cursor, setCursor] = useState<{ lat: number; lon: number; temp: number | null } | null>(null);
   const [grid, setGrid] = useState<(number | null)[][] | null>(null);
   const reqId = useRef(0);
@@ -118,6 +119,7 @@ export default function Explorer() {
         values={grid ?? undefined}
         onHover={setCursor}
         projection={projection}
+        particles={particlesOn ? (grid ?? null) : null}
         marker={point}
         onPoint={onPoint}
       />
@@ -171,6 +173,23 @@ export default function Explorer() {
               onChange={(v) => setProjection(v as "globe" | "mercator")}
               ariaLabel="Map projection"
             />
+            <ChipRow
+              label="Particles"
+              options={[
+                { value: "off", label: "Off" },
+                { value: "fronts", label: "Thermal fronts" },
+              ]}
+              value={particlesOn ? "fronts" : "off"}
+              onChange={(v) => setParticlesOn(v === "fronts")}
+              ariaLabel="Particle overlay"
+            />
+            {particlesOn && (
+              <p className="tiny" style={{ margin: 0 }}>
+                Particles trace <b>thermal fronts</b>: they drift along isotherms
+                (perpendicular to the temperature gradient), faster where the front is
+                sharper — a visualisation of this slice&apos;s structure, not a current field.
+              </p>
+            )}
             {range && <Colorbar field={field} lo={range.lo} hi={range.hi} units="°C" />}
             {field === "error" && (
               <p className="tiny">model − GLORYS: blue = model colder, red = model warmer.</p>
