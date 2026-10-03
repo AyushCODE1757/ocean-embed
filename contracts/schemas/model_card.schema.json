@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/model_card.schema.json",
+  "title": "OceanEmbed Model Card Metadata Schema",
+  "type": "object",
+  "required": ["model_id", "architecture", "training_data", "evaluation_summary", "limitations"],
+  "properties": {
+    "model_id": { "type": "string" },
+    "architecture": { "type": "string" },
+    "encoder": { "type": "string" },
+    "parameters_count": { "type": "integer" },
+    "training_data": {
+      "type": "object",
+      "properties": {
+        "start_date": { "type": "string" },
+        "end_date": { "type": "string" },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evaluation_summary": {
+      "type": "object"
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

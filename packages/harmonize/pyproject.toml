@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oceanembed-harmonize"
+version = "0.1.0"
+description = "OceanEmbed M2 Harmonization, Regridding, and Zarr Cube Pipeline"
+requires-python = ">=3.10"
+dependencies = [
+    "oceanembed-contracts",
+    "numpy",
+    "scipy",
+    "xarray",
+    "zarr",
+    "pyarrow",
+    "pyyaml"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

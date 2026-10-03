@@ -82,7 +82,11 @@ class Store:
 
     def section(self, date: str, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
         """temp_mean along points, [depth, point], nearest grid cell."""
-        pts = self.ds["temp_mean"].isel(time=self._tidx(date)).sel(
-            lat=xr.DataArray(lats, dims="p"), lon=xr.DataArray(lons, dims="p"), method="nearest"
+        pts = (
+            self.ds["temp_mean"]
+            .isel(time=self._tidx(date))
+            .sel(
+                lat=xr.DataArray(lats, dims="p"), lon=xr.DataArray(lons, dims="p"), method="nearest"
+            )
         )
         return pts.transpose("depth", "p").values.astype("float64")

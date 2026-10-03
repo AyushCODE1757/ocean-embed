@@ -1,5 +1,6 @@
 """Print pinned versions and the GitHub Action tags in use, for a manual latest-version check.
 Usage: python infra/scripts/check_versions.py"""
+
 import json
 import re
 import tomllib

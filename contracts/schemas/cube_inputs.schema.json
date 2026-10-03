@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/cube_inputs.schema.json",
+  "title": "OceanEmbed Input Surface Cube Schema",
+  "type": "object",
+  "required": ["shape", "dims", "variables", "grid", "time_range"],
+  "properties": {
+    "dims": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "enum": ["time", "channel", "lat", "lon"] }
+    },
+    "shape": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "channels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 7
+    },
+    "grid": {
+      "type": "object",
+      "required": ["lat_min", "lat_max", "lon_min", "lon_max", "spatial_res"],
+      "properties": {
+        "lat_min": { "type": "number", "const": 5.0 },
+        "lat_max": { "type": "number", "const": 30.0 },
+        "lon_min": { "type": "number", "const": 45.0 },
+        "lon_max": { "type": "number", "const": 105.0 },
+        "spatial_res": { "type": "number", "const": 0.25 }
+      }
+    },
+    "time_range": {
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string" },
+        "end": { "type": "string" }
+      }
+    }
+  }
+}

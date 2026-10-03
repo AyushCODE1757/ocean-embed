@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/uncertainty.schema.json",
+  "title": "OceanEmbed Ensemble Uncertainty and Calibration Schema",
+  "type": "object",
+  "required": ["date", "depth", "spread_shape", "calibration"],
+  "properties": {
+    "date": { "type": "string", "format": "date" },
+    "depth": { "type": "number" },
+    "spread_shape": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "calibration": {
+      "type": "object",
+      "properties": {
+        "crps": { "type": "number" },
+        "picp_90": { "type": "number" },
+        "rank_correlation_spread_error": { "type": "number" }
+      }
+    }
+  }
+}

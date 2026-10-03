@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: OceanEmbed - daily subsurface ocean temperature reconstructed from satellite observations
+message: >-
+  If you use OceanEmbed, please cite this repository and the underlying datasets
+  listed in docs/data_sources.md.
+type: software
+authors:
+  - name: The OceanEmbed team
+year: 2026
+license: MIT
+repository-code: "https://example.invalid/oceanembed"
+keywords:
+  - oceanography
+  - machine learning
+  - satellite remote sensing
+  - argo
+  - indian-ocean

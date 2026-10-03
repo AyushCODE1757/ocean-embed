@@ -27,7 +27,9 @@ def section(
 ) -> Section:
     try:
         verts = geo.parse_path(path)
-        if not all(s.lat_min <= la <= s.lat_max and s.lon_min <= lo <= s.lon_max for la, lo in verts):
+        if not all(
+            s.lat_min <= la <= s.lat_max and s.lon_min <= lo <= s.lon_max for la, lo in verts
+        ):
             raise ValueError("path leaves the contract domain")
         lats, lons, dist = geo.sample_path(verts, n)
         vals = store.section(date, lats, lons)

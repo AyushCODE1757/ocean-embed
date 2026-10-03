@@ -4,7 +4,9 @@ RHO = 1025.0  # kg m-3, reference seawater density (stated convention)
 CP = 3985.0  # J kg-1 K-1, reference specific heat (stated convention)
 
 
-def ohc_gj_m2(temp: np.ndarray, depths_m: list[int] | tuple[int, ...], max_depth: int = 300) -> np.ndarray:
+def ohc_gj_m2(
+    temp: np.ndarray, depths_m: list[int] | tuple[int, ...], max_depth: int = 300
+) -> np.ndarray:
     """rho*cp*integral of T dz over 0..max_depth (trapezoid on the standard levels).
     temp: [depth, lat, lon]. NaN if any level up to max_depth is missing. Units: GJ m-2."""
     d = np.asarray(depths_m, dtype=float)
@@ -15,7 +17,9 @@ def ohc_gj_m2(temp: np.ndarray, depths_m: list[int] | tuple[int, ...], max_depth
     return RHO * CP * integral / 1e9
 
 
-def isotherm_depth(temp: np.ndarray, depths_m: list[int] | tuple[int, ...], level: float) -> np.ndarray:
+def isotherm_depth(
+    temp: np.ndarray, depths_m: list[int] | tuple[int, ...], level: float
+) -> np.ndarray:
     """Depth (m) of the first downward crossing of `level` degC, linear between levels.
     NaN where the surface is already colder, or the isotherm is deeper than the last level."""
     d = np.asarray(depths_m, dtype=float)

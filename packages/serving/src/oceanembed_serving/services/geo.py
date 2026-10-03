@@ -25,9 +25,11 @@ def parse_path(text: str, max_vertices: int = 20) -> list[tuple[float, float]]:
     return pts  # type: ignore[return-value]
 
 
-def sample_path(vertices: list[tuple[float, float]], n: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def sample_path(
+    vertices: list[tuple[float, float]], n: int
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Evenly spaced points along the polyline. Returns lat, lon, cumulative distance (km)."""
-    seg_km = [haversine_km(*a, *b) for a, b in zip(vertices[:-1], vertices[1:])]
+    seg_km = [haversine_km(*a, *b) for a, b in zip(vertices[:-1], vertices[1:])]  # noqa: RUF007
     total = sum(seg_km)
     if total == 0:
         raise ValueError("path has zero length")

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/argo_gridded.schema.json",
+  "title": "OceanEmbed Gridded Argo Benchmark Schema",
+  "type": "object",
+  "required": ["spatial_resolution", "temporal_resolution", "dims"],
+  "properties": {
+    "spatial_resolution": { "type": "number", "const": 1.0 },
+    "temporal_resolution": { "type": "string", "enum": ["10-day", "monthly"] },
+    "dims": { "type": "array", "items": { "type": "string" } }
+  }
+}

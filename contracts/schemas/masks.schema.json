@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/masks.schema.json",
+  "title": "OceanEmbed Land and Ocean Depth Masks Schema",
+  "type": "object",
+  "required": ["valid_ocean_mask_shape", "valid_depth_mask_shape"],
+  "properties": {
+    "valid_ocean_mask_shape": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "valid_depth_mask_shape": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 3,
+      "maxItems": 3
+    }
+  }
+}
