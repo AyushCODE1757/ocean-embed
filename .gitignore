@@ -1,0 +1,13 @@
+data/
+*.npy
+*.zarr
+*.pt
+*.nc
+*.parquet
+node_modules/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+.next/

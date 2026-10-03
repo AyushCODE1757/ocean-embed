@@ -1,0 +1,6 @@
+- Skill vanishes below 300 m.
+- GLORYS is both training target and an Argo-assimilating product.
+- ARMOR3D and SSS use Argo.
+- 2025 SSS and ARMOR3D are near-real-time.
+- Argo 2024-2025 mixes real-time and delayed-mode.
+- Only 4 training years (2019-2022).
