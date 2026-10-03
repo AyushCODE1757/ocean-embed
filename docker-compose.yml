@@ -2,15 +2,23 @@ services:
   api:
     build:
       context: ./apps/api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     volumes:
       - ./data:/data:ro
+    environment:
+      - PYTHONPATH=/app
 
   web:
     build:
       context: ./apps/web
+    command: npm run dev -- --hostname 0.0.0.0 --port 3000
     ports:
       - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
     volumes:
       - ./data:/data:ro

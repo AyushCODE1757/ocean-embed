@@ -1,11 +1,15 @@
 [project]
 name = "oceanembed"
 version = "0.1.0"
-description = "OceanEmbed contract package"
+description = "OceanEmbed contract package and PoC web app"
 requires-python = ">=3.10"
 dependencies = [
     "numpy>=1.26",
     "pydantic>=2.0,<3.0",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "pandas>=2.0",
+    "pyarrow>=16.0",
 ]
 
 [dependency-groups]
