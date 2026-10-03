@@ -11,7 +11,7 @@ def test_grid_shape():
 
 def test_channel_order_and_context_channels():
     assert INPUT_CHANNELS == ["sst", "sss", "sla", "ucur", "vcur", "uwind", "vwind"]
-    assert CONTEXT_CHANNELS == ["sin_doy", "cos_doy", "lat", "ocean_mask"]
+    assert CONTEXT_CHANNELS == ["bathymetry", "lat", "sin_doy", "cos_doy"]
 
 
 def test_depths_length():

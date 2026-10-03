@@ -1,7 +1,7 @@
 # OceanEmbed (SIH26066)
 
 ## Overview
-TODO
+Stub repository for the OceanEmbed contract and pipeline skeleton.
 
 ## Data sources
 TODO
@@ -14,7 +14,6 @@ TODO
 5. 05_argo
 6. models
 7. evaluation
-TODO
 
 ## Run the app
 TODO
