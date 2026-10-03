@@ -88,7 +88,7 @@ export default function CyclonePage() {
             path: oceanClipPath(rings, {
               lon0: meta?.lon[0] ?? 45, lat0: meta?.lat[0] ?? 5,
               lon1: meta?.lon[meta.lon.length - 1] ?? 105, lat1: meta?.lat[meta.lat.length - 1] ?? 30,
-            }, 1205, 505),
+            }, 964, 404),
           }
         : null,
     });
@@ -98,6 +98,43 @@ export default function CyclonePage() {
     if (!heat) return null;
     return stretch(heat.values.flat().filter((v): v is number => v !== null));
   }, [heat]);
+
+  /* story markers: peak-intensity fix + the first landfall fix (real IBTrACS columns) */
+  const markers = useMemo(() => {
+    if (!storm) return [];
+    const out: { lat: number; lon: number; kind: "peak" | "landfall" }[] = [];
+    const withWind = storm.track.filter((t) => t.wind_kt != null);
+    const peak = withWind.length
+      ? withWind.reduce((a, b) => ((b.wind_kt ?? 0) > (a.wind_kt ?? 0) ? b : a))
+      : null;
+    if (peak) out.push({ lat: peak.lat, lon: peak.lon, kind: "peak" });
+    const firstLandfall = storm.track.find(
+      (t) => t.dist2land_km != null && t.dist2land_km < 30,
+    );
+    if (firstLandfall) out.push({ lat: firstLandfall.lat, lon: firstLandfall.lon, kind: "landfall" });
+    return out;
+  }, [storm]);
+
+  /* dynamic reading: what the user is looking at, in one sentence */
+  const reading = useMemo(() => {
+    if (!storm || !heat || !date) return null;
+    const target = new Date(date + "T00:00:00Z").getTime();
+    const fix = storm.track.reduce((a, b) =>
+      Math.abs(new Date(b.iso_time + "Z").getTime() - target) <
+      Math.abs(new Date(a.iso_time + "Z").getTime() - target) ? b : a);
+    const dtDays = Math.round(Math.abs(new Date(fix.iso_time + "Z").getTime() - target) / 864e5);
+    // sample the reconstructed field at the storm position (nearest cell)
+    const rows = heat.values.length, cols = rows ? heat.values[0].length : 0;
+    const r = Math.min(rows - 1, Math.max(0, Math.round(((fix.lat - (meta?.lat[0] ?? 5)) / 25) * (rows - 1))));
+    const c = Math.min(cols - 1, Math.max(0, Math.round(((fix.lon - (meta?.lon[0] ?? 45)) / 60) * (cols - 1))));
+    const atStorm = heat.values[r]?.[c] ?? null;
+    const flat = heat.values.flat().filter((v): v is number => v !== null);
+    const domainMean = flat.reduce((a, b) => a + b, 0) / (flat.length || 1);
+    const phase = (kt: number) =>
+      kt < 17 ? "a low-pressure area" : kt < 28 ? "a depression" : kt < 34 ? "a deep depression"
+      : kt < 48 ? "a cyclonic storm" : kt < 64 ? "a severe cyclonic storm" : "a very severe cyclonic storm";
+    return { fix, dtDays, atStorm, domainMean, phase };
+  }, [storm, heat, date, meta]);
 
   if (error) return <DataState error={error} />;
 
@@ -146,11 +183,54 @@ export default function CyclonePage() {
             lon0={meta?.lon[0] ?? 45} lat0={meta?.lat[0] ?? 5}
             lon1={meta?.lon[meta.lon.length - 1] ?? 105} lat1={meta?.lat[meta.lat.length - 1] ?? 30}
             track={trackPts}
+            trackMarkers={markers}
             interactive={false}
           />
           {!heatUrl && <div className="skeleton" style={{ position: "absolute", inset: 12 }} />}
         </div>
+        {/* track legend: how to read the red line */}
+        <div className="panel-pad row wrap tiny" style={{ gap: 16, borderTop: "1px solid var(--hairline)" }}>
+          <b style={{ fontSize: 12, color: "var(--text-2)" }}>Reading the track:</b>
+          <span className="row" style={{ gap: 6 }}><span style={{ width: 9, height: 9, borderRadius: 9, background: "#93a9be" }} />≤33 kt · depression</span>
+          <span className="row" style={{ gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: 12, background: "#e9b45c" }} />34–63 kt · cyclonic storm</span>
+          <span className="row" style={{ gap: 6 }}><span style={{ width: 16, height: 16, borderRadius: 16, background: "#f0705a" }} />≥64 kt · very severe</span>
+          <span className="row" style={{ gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: 12, border: "2.5px solid #fff", background: "rgba(240,112,90,0.25)" }} />peak intensity</span>
+          <span className="row" style={{ gap: 6 }}><span style={{ width: 11, height: 11, borderRadius: 11, background: "#fff", border: "2px solid #f0705a" }} />landfall</span>
+        </div>
       </div>
+
+      {/* dynamic reading of the current snapshot */}
+      {reading && heat && (
+        <div className="note info" style={{ marginTop: "var(--s4)" }}>
+          <b>What you are looking at.</b>{" "}
+          {reading.dtDays > 0
+            ? <>The nearest IBTrACS fix to this date is {reading.dtDays} day{reading.dtDays > 1 ? "s" : ""} away. </>
+            : null}
+          On {fmtDate(reading.fix.iso_time.slice(0, 10))}, IBTrACS places {storm?.name} near{" "}
+          <b className="num">{reading.fix.lat.toFixed(1)}°N {reading.fix.lon.toFixed(1)}°E</b> as{" "}
+          <b>{reading.phase(reading.fix.wind_kt ?? 0)}</b>
+          {reading.fix.wind_kt != null && <> ({reading.fix.wind_kt} kt{reading.fix.pres_hpa != null ? `, ${Math.round(reading.fix.pres_hpa)} hPa` : ""})</>}
+          .{" "}
+          {reading.atStorm !== null ? (
+            metric === "ohc" ? (
+              <>Beneath that exact position the reconstructed ocean holds{" "}
+              <b className="num">{reading.atStorm.toFixed(1)} GJ m⁻²</b> of heat in the top 300 m —{" "}
+              {reading.atStorm >= reading.domainMean ? "above" : "below"} the domain mean of{" "}
+              <b className="num">{reading.domainMean.toFixed(1)} GJ m⁻²</b>.{" "}
+              {reading.atStorm >= reading.domainMean
+                ? "Deep warm water along the track is the fuel available for intensification."
+                : "Cooler-than-average water here limits the energy the storm can draw from the sea."}</>
+            ) : (
+              <>The 26 °C isotherm beneath the storm sits at{" "}
+              <b className="num">{reading.atStorm.toFixed(0)} m</b> (domain mean{" "}
+              <b className="num">{reading.domainMean.toFixed(0)} m</b>) — the deeper the warm layer,
+              the more resistant the ocean is to storm-induced cooling.</>
+            )
+          ) : (
+            "No reconstructed value at the storm position for this field."
+          )}
+        </div>
+      )}
 
       {storm && (
         <div className="row wrap" style={{ gap: "var(--s4)", marginTop: "var(--s4)", alignItems: "stretch" }}>

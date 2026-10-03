@@ -25,6 +25,8 @@ export interface OceanMapProps {
   particles?: (number | null)[][] | null;
   argo?: ArgoObservation[];
   track?: TrackPoint[];
+  /* story markers on the track: peak-intensity fix, landfall fixes */
+  trackMarkers?: { lat: number; lon: number; kind: "peak" | "landfall" }[];
   marker?: { lat: number; lon: number } | null;
   onPoint?: (lat: number, lon: number) => void;
   interactive?: boolean;
@@ -97,8 +99,28 @@ export default function OceanMap(props: OceanMapProps) {
         },
       });
       map.addSource("track", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
-      map.addLayer({ id: "track-line", type: "line", source: "track", paint: { "line-color": "#f0705a", "line-width": 2.2 }, filter: ["==", "$type", "LineString"] });
-      map.addLayer({ id: "track-dots", type: "circle", source: "track", paint: { "circle-radius": 3, "circle-color": "#f0705a", "circle-stroke-width": 1, "circle-stroke-color": "rgba(5,14,24,0.8)" }, filter: ["==", "$type", "Point"] });
+      map.addLayer({ id: "track-line", type: "line", source: "track", paint: { "line-color": "#f0705a", "line-width": 2, "line-opacity": 0.85 }, filter: ["==", "$type", "LineString"] });
+      // 6-hourly fixes: size + colour encode the recorded max sustained wind
+      map.addLayer({
+        id: "track-dots", type: "circle", source: "track",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["coalesce", ["get", "wind"], 0], 0, 1.8, 34, 3.2, 64, 4.8, 120, 6],
+          "circle-color": ["interpolate", ["linear"], ["coalesce", ["get", "wind"], 0], 0, "#93a9be", 34, "#e9b45c", 64, "#f0705a"],
+          "circle-stroke-width": 0.8, "circle-stroke-color": "rgba(5,14,24,0.85)",
+        },
+        filter: ["==", "$type", "Point"],
+      });
+      map.addSource("track-markers", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+      map.addLayer({
+        id: "marker-peak", type: "circle", source: "track-markers",
+        paint: { "circle-radius": 7, "circle-color": "rgba(240,112,90,0.3)", "circle-stroke-width": 2.2, "circle-stroke-color": "#ffffff" },
+        filter: ["==", ["get", "kind"], "peak"],
+      });
+      map.addLayer({
+        id: "marker-landfall", type: "circle", source: "track-markers",
+        paint: { "circle-radius": 5, "circle-color": "#ffffff", "circle-stroke-width": 2, "circle-stroke-color": "#f0705a" },
+        filter: ["==", ["get", "kind"], "landfall"],
+      });
       map.addSource("marker", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       map.addLayer({
         id: "marker-dot", type: "circle", source: "marker",
@@ -326,9 +348,18 @@ function paint(map: MlMap, p: OceanMapProps) {
     features: (p.track?.length
       ? [
           { type: "Feature" as const, properties: {}, geometry: { type: "LineString" as const, coordinates: p.track.map((t) => [t.lon, t.lat]) } },
-          ...p.track.filter((_, i) => i % 3 === 0).map((t) => ({ type: "Feature" as const, properties: { time: t.iso_time, wind: t.wind_kt ?? undefined }, geometry: { type: "Point" as const, coordinates: [t.lon, t.lat] } })),
+          ...p.track.map((t) => ({ type: "Feature" as const, properties: { time: t.iso_time, wind: t.wind_kt ?? 0, pres: t.pres_hpa ?? undefined }, geometry: { type: "Point" as const, coordinates: [t.lon, t.lat] } })),
         ]
       : []),
+  });
+  const markers = map.getSource("track-markers") as GeoJSONSource | undefined;
+  markers?.setData({
+    type: "FeatureCollection",
+    features: (p.trackMarkers ?? []).map((m) => ({
+      type: "Feature" as const,
+      properties: { kind: m.kind },
+      geometry: { type: "Point" as const, coordinates: [m.lon, m.lat] },
+    })),
   });
   const mk = map.getSource("marker") as GeoJSONSource | undefined;
   mk?.setData({
