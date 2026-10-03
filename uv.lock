@@ -603,6 +603,8 @@ source = { editable = "packages/serving" }
 dependencies = [
     { name = "fastapi" },
     { name = "numpy" },
+    { name = "pandas" },
+    { name = "pyarrow" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "uvicorn" },
@@ -621,6 +623,8 @@ dev = [
 requires-dist = [
     { name = "fastapi", specifier = "==0.141.1" },
     { name = "numpy", specifier = "==2.5.3" },
+    { name = "pandas", specifier = ">=3.0" },
+    { name = "pyarrow", specifier = ">=25.0" },
     { name = "pydantic", specifier = "==2.13.5" },
     { name = "pydantic-settings", specifier = "==2.15.0" },
     { name = "uvicorn", specifier = "==0.54.0" },

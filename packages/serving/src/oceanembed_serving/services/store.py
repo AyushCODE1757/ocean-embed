@@ -44,8 +44,21 @@ class Store:
     def _clean(arr: np.ndarray) -> list:
         return np.where(np.isfinite(arr), arr, None).tolist()
 
-    def slice(self, date: str, depth_m: int) -> dict:
-        a = self.ds["temp_mean"].isel(time=self._tidx(date), depth=self._didx(depth_m)).values
+    def slice(self, date: str, depth_m: int, field: str = "model") -> dict:
+        t, d = self._tidx(date), self._didx(depth_m)
+        if field == "model":
+            a = self.ds["temp_mean"].isel(time=t, depth=d).values
+        elif field == "truth":
+            a = self.ds["temp_truth"].isel(time=t, depth=d).values
+        elif field == "clim":
+            a = self.ds["temp_clim"].isel(time=t, depth=d).values
+        elif field == "error":
+            a = (
+                self.ds["temp_mean"].isel(time=t, depth=d)
+                - self.ds["temp_truth"].isel(time=t, depth=d)
+            ).values
+        else:
+            raise KeyError(f"unknown field {field}")
         return {
             "lat": self.ds["lat"].values.tolist(),
             "lon": self.ds["lon"].values.tolist(),
@@ -59,12 +72,27 @@ class Store:
             raise ValueError("point outside the contract domain")
         pt = self.ds.isel(time=self._tidx(date)).sel(lat=lat, lon=lon, method="nearest")
         mean = np.round(pt["temp_mean"].values.astype("float64"), 3)
+        truth = (
+            np.round(pt["temp_truth"].values.astype("float64"), 3)
+            if "temp_truth" in self.ds
+            else np.full_like(mean, np.nan)
+        )
+        clim = (
+            np.round(pt["temp_clim"].values.astype("float64"), 3)
+            if "temp_clim" in self.ds
+            else np.full_like(mean, np.nan)
+        )
         spread = (
             np.round(pt["temp_spread"].values.astype("float64"), 3)
             if "temp_spread" in self.ds
             else np.full_like(mean, np.nan)
         )
-        return {"mean": self._clean(mean), "spread": self._clean(spread)}
+        return {
+            "mean": self._clean(mean),
+            "spread": self._clean(spread),
+            "truth": self._clean(truth),
+            "clim": self._clean(clim),
+        }
 
     def spread_slice(self, date: str, depth_m: int) -> dict:
         if "temp_spread" not in self.ds:

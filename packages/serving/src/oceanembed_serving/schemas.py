@@ -19,10 +19,22 @@ class Meta(BaseModel):
 class Slice(BaseModel):
     date: str
     depth_m: int
+    field: str = "model"  # model | truth | clim | error
     lat: list[float]
     lon: list[float]
     values: list[list[float | None]]  # [lat][lon], null over land / invalid
     provenance: Provenance
+
+
+class ArgoObservation(BaseModel):
+    time: str
+    lat: float
+    lon: float
+    depth_m: float
+    temp_c: float
+    data_mode: str
+    platform: str
+    cycle: int
 
 
 class Profile(BaseModel):
@@ -32,6 +44,10 @@ class Profile(BaseModel):
     depths_m: list[int]
     mean: list[float | None]
     spread: list[float | None]  # null if the run has no uncertainty output
+    truth: list[float | None]  # GLORYS at the same cell (null if not in this run)
+    clim: list[float | None]  # training-years climatology at the same cell
+    argo: list[ArgoObservation]  # nearby QC-flagged profiles (spacetime window)
+    argo_note: str | None = None
     provenance: Provenance
 
 

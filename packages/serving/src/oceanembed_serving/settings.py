@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     metrics_path: Path = Path("artifacts/eval/metrics.json")
     manifest_path: Path = Path("runs/current/run_manifest.json")
     advisor_dir: Path = Path("artifacts/advisor")
+    argo_path: Path = Path("data/app_data/argo.parquet")
+    cyclones_path: Path = Path("artifacts/cyclones/cyclones.json")
     cors_origins: list[str] = ["http://localhost:3000"]
     # Fixed by contracts/depths.yaml and contracts/grid.yaml. Keep in sync.
     depths_m: tuple[int, ...] = (0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000)

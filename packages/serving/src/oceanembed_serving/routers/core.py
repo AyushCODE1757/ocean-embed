@@ -1,7 +1,10 @@
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..deps import get_provenance, get_store
 from ..schemas import Meta, Profile, Provenance, Slice
+from ..services import argo as argo_svc
 from ..services.store import Store
 from ..settings import Settings, get_settings
 
@@ -34,11 +37,12 @@ def meta(
 def get_slice(
     date: str,
     depth: int = Query(ge=0, le=1000),
+    field: Literal["model", "truth", "clim", "error"] = "model",
     store: Store = Depends(get_store),
     prov: Provenance = Depends(get_provenance),
 ) -> Slice:
     try:
-        return Slice(date=date, depth_m=depth, provenance=prov, **store.slice(date, depth))
+        return Slice(date=date, depth_m=depth, field=field, provenance=prov, **store.slice(date, depth, field))
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -58,4 +62,13 @@ def get_profile(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    return Profile(date=date, lat=lat, lon=lon, depths_m=list(s.depths_m), provenance=prov, **p)
+    try:
+        obs = argo_svc.nearby(s, date, lat, lon)
+        argo_note = None if obs else "no Argo profile within 1 deg / 5 days of this point"
+    except argo_svc.ArgoNotBuilt:
+        obs = []
+        argo_note = "argo overlay unavailable in this deployment"
+    return Profile(
+        date=date, lat=lat, lon=lon, depths_m=list(s.depths_m), provenance=prov,
+        argo=obs, argo_note=argo_note, **p,
+    )
