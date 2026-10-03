@@ -8,6 +8,7 @@ import { ChipRow, Colorbar, DateSlider } from "@/components/controls/Controls";
 import { DataState, useMeta } from "@/components/feedback/DataState";
 import { api, cachedSlice, prefetchSlices, type Profile, type SliceField } from "@/lib/api-client";
 import { fieldToDataURL, stretch, rampFor } from "@/lib/colormaps";
+import { landRings, oceanClipPath } from "@/lib/coastline";
 import { fmtDate } from "@/lib/format";
 import { parseShareState, toShareState } from "@/lib/url-state";
 
@@ -64,13 +65,23 @@ export default function Explorer() {
     const id = ++reqId.current;
     setLoaded(false);
     cachedSlice(date, depth, field)
-      .then((s) => {
+      .then(async (s) => {
         if (id !== reqId.current) return;
         const flat = s.values.flat().filter((v): v is number => v !== null);
         if (flat.length) {
           const r = field === "error" ? symmetric(flat) : stretch(flat);
+          const rings = await landRings();
+          if (id !== reqId.current) return;
           setRange(r);
-          setFieldUrl(fieldToDataURL([...s.values].reverse(), { ramp: rampFor(field), lo: r.lo, hi: r.hi }));
+          setFieldUrl(fieldToDataURL([...s.values].reverse(), {
+            ramp: rampFor(field), lo: r.lo, hi: r.hi, smooth: 5,
+            landClip: {
+              path: oceanClipPath(rings, {
+                lon0: meta.lon[0], lat0: meta.lat[0],
+                lon1: meta.lon[meta.lon.length - 1], lat1: meta.lat[meta.lat.length - 1],
+              }, 1205, 505),
+            },
+          }));
         }
         setGrid(s.values);
         setSliceErr(null);

@@ -295,7 +295,7 @@ export default function OceanMap(props: OceanMapProps) {
           textShadow: "0 1px 4px rgba(2,8,15,0.9)",
         }}
       >
-        Field: OceanEmbed (GLORYS12-trained) · Basemap © OpenStreetMap contributors, © CARTO
+        Field: OceanEmbed (GLORYS12-trained) · Basemap © OpenStreetMap contributors, © CARTO · Coastline © Natural Earth
       </div>
       <canvas
         ref={canvasRef}

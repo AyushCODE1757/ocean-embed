@@ -71,59 +71,131 @@ export function stretch(values: number[]): { lo: number; hi: number } {
   return hi > lo ? { lo, hi } : { lo, hi: lo + 1e-6 };
 }
 
-/* Render a [rows][cols] grid of values to a dataURL.
-   `smooth` = stepped bilinear upscale factor: the grid is 241x101, and
-   nearest-neighbor stretching looks blocky — two or three halving steps of
-   high-quality canvas resampling give the smooth nullschool-style field.
+/* Render a [rows][cols] grid of values to a dataURL, evaluated at `smooth`×
+   resolution (default 4×). The grid is 241×101; magnifying that bitmap always
+   looks blocky, so instead we SAMPLE the field continuously at the target
+   resolution: bicubic (Catmull-Rom) value interpolation + an anti-aliased
+   coastline derived from the smoothstep of the interpolated land mask. This is
+   the nullschool approach — smooth + sharp at any scale, not blurry.
    Rows are expected south-first for map use (flipped by the caller). */
 export function fieldToDataURL(
   values: (number | null)[][],
-  opts: { ramp: Ramp; lo: number; hi: number; smooth?: number },
+  opts: {
+    ramp: Ramp; lo: number; hi: number; smooth?: number;
+    /* optional vector land clip (Natural Earth): destination-in evenodd fill
+       gives true anti-aliased coastlines instead of the grid's staircase mask */
+    landClip?: { path: Path2D } | null;
+  },
 ): string {
   const rows = values.length;
   const cols = rows ? values[0].length : 0;
   if (!rows || !cols) return "";
-  const canvas = document.createElement("canvas");
-  canvas.width = cols;
-  canvas.height = rows;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
-  const img = ctx.createImageData(cols, rows);
+  const factor = Math.max(1, opts.smooth ?? 4);
+  const outW = Math.round(cols * factor);
+  const outH = Math.round(rows * factor);
   const span = opts.hi - opts.lo;
+
+  // flat arrays + 1024-entry colour LUT (hot loop stays tight)
+  const val = new Float64Array(rows * cols).fill(NaN);
+  const msk = new Uint8Array(rows * cols);
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const v = values[r][c];
-      const o = (r * cols + c) * 4;
-      if (v === null || !isFinite(v)) {
-        img.data[o + 3] = 0; // transparent = land / nodata
-        continue;
+      const i = r * cols + c;
+      if (v !== null && isFinite(v)) val[i] = v;
+      msk[i] = v !== null && isFinite(v) ? 1 : 0;
+    }
+  }
+  const lut = new Uint8Array(1024 * 3);
+  for (let i = 0; i < 1024; i++) {
+    const [rr, gg, bb] = sampleRamp(opts.ramp, i / 1023);
+    lut[i * 3] = rr; lut[i * 3 + 1] = gg; lut[i * 3 + 2] = bb;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = outW;
+  canvas.height = outH;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+  const img = ctx.createImageData(outW, outH);
+  const data = img.data;
+
+  const g = (c: number, r: number) =>
+    (c < 0 ? 0 : c >= cols ? cols - 1 : c) + (r < 0 ? 0 : r >= rows ? rows - 1 : r) * cols;
+  const smoothstep = (a: number, b: number, x: number) => {
+    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  };
+
+  for (let py = 0; py < outH; py++) {
+    const gy = (py + 0.5) / factor - 0.5;
+    const iy = Math.floor(gy);
+    const ty = gy - iy;
+    for (let px = 0; px < outW; px++) {
+      const gx = (px + 0.5) / factor - 0.5;
+      const ix = Math.floor(gx);
+      const tx = gx - ix;
+      const o = (py * outW + px) * 4;
+
+      // anti-aliased coast: continuous mask from bilinear of the 0/1 mask
+      const m =
+        msk[g(ix, iy)] * (1 - tx) * (1 - ty) +
+        msk[g(ix + 1, iy)] * tx * (1 - ty) +
+        msk[g(ix, iy + 1)] * (1 - tx) * ty +
+        msk[g(ix + 1, iy + 1)] * tx * ty;
+      const alpha = smoothstep(0.32, 0.62, m);
+      if (alpha <= 0) continue; // stays transparent (land)
+
+      // bicubic (Catmull-Rom) value sample with null-tolerant fallback
+      const wx0 = -0.5 * tx * tx * tx + tx * tx - 0.5 * tx;
+      const wx1 = 1.5 * tx * tx * tx - 2.5 * tx * tx + 1;
+      const wx2 = -1.5 * tx * tx * tx + 2 * tx * tx + 0.5 * tx;
+      const wx3 = 0.5 * tx * tx * tx - 0.5 * tx * tx;
+      const wy0 = -0.5 * ty * ty * ty + ty * ty - 0.5 * ty;
+      const wy1 = 1.5 * ty * ty * ty - 2.5 * ty * ty + 1;
+      const wy2 = -1.5 * ty * ty * ty + 2 * ty * ty + 0.5 * ty;
+      const wy3 = 0.5 * ty * ty * ty - 0.5 * ty * ty;
+      let acc = 0, wsum = 0, bilAcc = 0, bilW = 0;
+      for (let j = 0; j < 4; j++) {
+        const wy = j === 0 ? wy0 : j === 1 ? wy1 : j === 2 ? wy2 : wy3;
+        for (let i2 = 0; i2 < 4; i2++) {
+          const wx = i2 === 0 ? wx0 : i2 === 1 ? wx1 : i2 === 2 ? wx2 : wx3;
+          const v = val[g(ix - 1 + i2, iy - 1 + j)];
+          const w = wx * wy;
+          if (isFinite(v)) { acc += v * w; wsum += w; }
+        }
       }
-      const [rr, gg, bb] = sampleRamp(opts.ramp, (v - opts.lo) / span);
-      img.data[o] = rr;
-      img.data[o + 1] = gg;
-      img.data[o + 2] = bb;
-      img.data[o + 3] = 255;
+      if (wsum > 0.02 && Math.abs(wsum - 1) < 0.25) {
+        acc /= wsum;
+      } else {
+        // fallback: valid-weighted bilinear at the 4 nearest cells
+        for (let j = 0; j < 2; j++) {
+          for (let i2 = 0; i2 < 2; i2++) {
+            const v = val[g(ix + i2, iy + j)];
+            const w =
+              (i2 === 0 ? 1 - tx : tx) * (j === 0 ? 1 - ty : ty) *
+              (isFinite(v) ? 1 : 0);
+            if (w > 0) { bilAcc += v * w; bilW += w; }
+          }
+        }
+        if (bilW <= 0) continue; // fully nodata
+        acc = bilAcc / bilW;
+      }
+
+      const idx = Math.max(0, Math.min(1023, Math.round(((acc - opts.lo) / span) * 1023)));
+      data[o] = lut[idx * 3];
+      data[o + 1] = lut[idx * 3 + 1];
+      data[o + 2] = lut[idx * 3 + 2];
+      data[o + 3] = Math.round(255 * alpha);
     }
   }
   ctx.putImageData(img, 0, 0);
-  const factor = opts.smooth ?? 4;
-  if (factor <= 1) return canvas.toDataURL();
-  let src: HTMLCanvasElement = canvas;
-  let grown = 1;
-  while (grown < factor) {
-    const step = Math.min(2, factor / grown);
-    const next = document.createElement("canvas");
-    next.width = Math.round(cols * grown * step);
-    next.height = Math.round(rows * grown * step);
-    const nctx = next.getContext("2d");
-    if (!nctx) break;
-    nctx.imageSmoothingEnabled = true;
-    nctx.imageSmoothingQuality = "high";
-    nctx.drawImage(src, 0, 0, next.width, next.height);
-    src = next;
-    grown *= step;
+  if (opts.landClip) {
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.fill(opts.landClip.path, "evenodd");
+    ctx.globalCompositeOperation = "source-over";
   }
-  return src.toDataURL();
+  return canvas.toDataURL();
 }
 
 export function niceTicks(lo: number, hi: number, count = 5): number[] {

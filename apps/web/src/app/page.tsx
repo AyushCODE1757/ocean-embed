@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, cachedMeta, type Meta, type Metrics } from "@/lib/api-client";
 import { fieldToDataURL, stretch, rampFor } from "@/lib/colormaps";
+import { landRings, oceanClipPath } from "@/lib/coastline";
 import { DataState, useMeta } from "@/components/feedback/DataState";
 
 /* Landing. The hero renders a REAL slice (2024-01-01, 0 m) fetched from the
@@ -21,14 +22,20 @@ export default function Landing() {
 
   useEffect(() => {
     let on = true;
-    api.slice("2024-01-01", 0, "model")
-      .then((s) => {
+    Promise.all([
+      api.slice("2024-01-01", 0, "model"),
+      landRings(),
+    ])
+      .then(([s, rings]) => {
         if (!on) return;
         const flat = s.values.flat().filter((v): v is number => v !== null);
         const { lo, hi } = stretch(flat);
         // grid rows run south-first; flip so north is up in the hero art.
-        // 8x stepped bilinear so the coastline is antialiased at hero size.
-        setHeroArt(fieldToDataURL([...s.values].reverse(), { ramp: rampFor("model"), lo, hi, smooth: 8 }));
+        // 10x bicubic field sampling + vector coastline: sharp + smooth on high-DPI heroes.
+        setHeroArt(fieldToDataURL([...s.values].reverse(), {
+          ramp: rampFor("model"), lo, hi, smooth: 10,
+          landClip: { path: oceanClipPath(rings, { lon0: 45, lat0: 5, lon1: 105, lat1: 30 }, 2410, 1010) },
+        }));
       })
       .catch(() => {});
     return () => { on = false; };

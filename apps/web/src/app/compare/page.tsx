@@ -6,6 +6,7 @@ import { ChipRow, Colorbar, DateSlider } from "@/components/controls/Controls";
 import { DataState, useMeta } from "@/components/feedback/DataState";
 import { api, cachedSlice, type SliceField } from "@/lib/api-client";
 import { fieldToDataURL, stretch, rampFor } from "@/lib/colormaps";
+import { landRings, oceanClipPath } from "@/lib/coastline";
 import { fmtDate } from "@/lib/format";
 
 /* Side-by-side: reconstruction vs GLORYS vs error, one shared control set,
@@ -43,8 +44,17 @@ export default function Compare() {
         const flat = s.values.flat().filter((v): v is number => v !== null);
         const r = p.field === "error" ? symmetric(flat) : stretch(flat);
         const mean = flat.reduce((a, b) => a + b, 0) / (flat.length || 1);
+        const rings = await landRings();
         return [p.field, {
-          url: fieldToDataURL([...s.values].reverse(), { ramp: rampFor(p.field), lo: r.lo, hi: r.hi }),
+          url: fieldToDataURL([...s.values].reverse(), {
+            ramp: rampFor(p.field), lo: r.lo, hi: r.hi, smooth: 4,
+            landClip: {
+              path: oceanClipPath(rings, {
+                lon0: meta.lon[0], lat0: meta.lat[0],
+                lon1: meta.lon[meta.lon.length - 1], lat1: meta.lat[meta.lat.length - 1],
+              }, 964, 404),
+            },
+          }),
           lo: r.lo, hi: r.hi, mean, nValid: flat.length,
         }] as const;
       }),

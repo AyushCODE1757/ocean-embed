@@ -6,6 +6,7 @@ import { ChipRow, Colorbar } from "@/components/controls/Controls";
 import { DataState, useMeta } from "@/components/feedback/DataState";
 import { api, type Cyclones, type HeatField } from "@/lib/api-client";
 import { fieldToDataURL, stretch, rampFor } from "@/lib/colormaps";
+import { landRings, oceanClipPath, type Ring } from "@/lib/coastline";
 import { fmtDate, fmtKm } from "@/lib/format";
 
 /* Cyclone case study: IBTrACS best track over the reconstructed pre-storm
@@ -26,6 +27,11 @@ export default function CyclonePage() {
   const [date, setDate] = useState("");
   const [heat, setHeat] = useState<HeatField | null>(null);
   const [heatErr, setHeatErr] = useState<string | null>(null);
+  const [landRingsCache, setLandRingsCache] = useState<Ring[] | null>(null);
+
+  useEffect(() => {
+    landRings().then(setLandRingsCache).catch(() => {});
+  }, []);
 
   useEffect(() => {
     api.cyclones().then((c) => {
@@ -74,8 +80,19 @@ export default function CyclonePage() {
     if (!heat) return null;
     const flat = heat.values.flat().filter((v): v is number => v !== null);
     const { lo, hi } = stretch(flat);
-    return fieldToDataURL([...heat.values].reverse(), { ramp: rampFor(metric), lo, hi });
-  }, [heat, metric]);
+    const rings = landRingsCache ?? null;
+    return fieldToDataURL([...heat.values].reverse(), {
+      ramp: rampFor(metric), lo, hi, smooth: 4,
+      landClip: rings
+        ? {
+            path: oceanClipPath(rings, {
+              lon0: meta?.lon[0] ?? 45, lat0: meta?.lat[0] ?? 5,
+              lon1: meta?.lon[meta.lon.length - 1] ?? 105, lat1: meta?.lat[meta.lat.length - 1] ?? 30,
+            }, 1205, 505),
+          }
+        : null,
+    });
+  }, [heat, metric, meta, landRingsCache]);
 
   const heatRange = useMemo(() => {
     if (!heat) return null;
