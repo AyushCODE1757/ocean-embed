@@ -51,9 +51,7 @@ def tiny_store(tmp_path, monkeypatch):
             "TEMP": [28.1, 27.5, 26.0],
             "LATITUDE": [5.1, 5.1, 9.9],
             "LONGITUDE": [45.1, 45.1, 46.0],
-            "TIME": pd.to_datetime(
-                ["2024-01-02", "2024-01-02", "2024-03-01"], utc=True
-            ),
+            "TIME": pd.to_datetime(["2024-01-02", "2024-01-02", "2024-03-01"], utc=True),
         }
     ).to_parquet(argo)
     monkeypatch.setenv("OE_PREDICTIONS_PATH", str(pred))
@@ -158,8 +156,16 @@ def test_metrics_contract_from_build(tmp_path, monkeypatch):
                 "test_years": [2024],
                 "independence_note": "n",
                 "rows": [
-                    {"method": "oceanembed", "depth_m": 100, "basin": "all", "season": "all",
-                     "rmse": 1.381, "bias": None, "corr": None, "n": 0}
+                    {
+                        "method": "oceanembed",
+                        "depth_m": 100,
+                        "basin": "all",
+                        "season": "all",
+                        "rmse": 1.381,
+                        "bias": None,
+                        "corr": None,
+                        "n": 0,
+                    }
                 ],
             }
         )

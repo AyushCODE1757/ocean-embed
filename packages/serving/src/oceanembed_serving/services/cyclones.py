@@ -42,19 +42,30 @@ def load(settings: Settings) -> Cyclones:
     for s in raw.get("storms", []):
         track = [
             TrackPoint(
-                iso_time=p["iso_time"], lat=p["lat"], lon=p["lon"], wind_kt=p.get("wind_kt"),
-                pres_hpa=p.get("pres_hpa"), dist2land_km=p.get("dist2land_km"),
+                iso_time=p["iso_time"],
+                lat=p["lat"],
+                lon=p["lon"],
+                wind_kt=p.get("wind_kt"),
+                pres_hpa=p.get("pres_hpa"),
+                dist2land_km=p.get("dist2land_km"),
                 landfall=p.get("landfall"),
             )
             for p in s.get("track", [])
         ]
         storms.append(
             Storm(
-                sid=s["sid"], name=s["name"], basin=s["basin"], season=s["season"],
-                n_points=s.get("n_points", len(track)), track=track,
+                sid=s["sid"],
+                name=s["name"],
+                basin=s["basin"],
+                season=s["season"],
+                n_points=s.get("n_points", len(track)),
+                track=track,
             )
         )
     return Cyclones(
-        source=raw.get("source"), source_url=raw.get("source_url"),
-        retrieved_utc=raw.get("retrieved_utc"), note=raw.get("note"), storms=storms,
+        source=raw.get("source"),
+        source_url=raw.get("source_url"),
+        retrieved_utc=raw.get("retrieved_utc"),
+        note=raw.get("note"),
+        storms=storms,
     )

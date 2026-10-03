@@ -40,8 +40,13 @@ def _load(path: str) -> pd.DataFrame:
 
 
 def nearby(
-    settings: Settings, date: str, lat: float, lon: float,
-    radius_deg: float = 1.0, days: int = 5, limit: int = 400,
+    settings: Settings,
+    date: str,
+    lat: float,
+    lon: float,
+    radius_deg: float = 1.0,
+    days: int = 5,
+    limit: int = 400,
 ) -> list[dict]:
     """Observation levels within radius_deg of the point and days of the date,
     nearest in space-time first."""

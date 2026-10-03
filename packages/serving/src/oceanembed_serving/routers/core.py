@@ -42,7 +42,13 @@ def get_slice(
     prov: Provenance = Depends(get_provenance),
 ) -> Slice:
     try:
-        return Slice(date=date, depth_m=depth, field=field, provenance=prov, **store.slice(date, depth, field))
+        return Slice(
+            date=date,
+            depth_m=depth,
+            field=field,
+            provenance=prov,
+            **store.slice(date, depth, field),
+        )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -69,6 +75,12 @@ def get_profile(
         obs = []
         argo_note = "argo overlay unavailable in this deployment"
     return Profile(
-        date=date, lat=lat, lon=lon, depths_m=list(s.depths_m), provenance=prov,
-        argo=obs, argo_note=argo_note, **p,
+        date=date,
+        lat=lat,
+        lon=lon,
+        depths_m=list(s.depths_m),
+        provenance=prov,
+        argo=obs,
+        argo_note=argo_note,
+        **p,
     )

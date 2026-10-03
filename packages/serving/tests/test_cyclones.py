@@ -48,12 +48,17 @@ def test_cyclones_override_path(clear_ref_cache, tmp_path, monkeypatch):
             {
                 "source": "test fixture",
                 "storms": [
-                    {"sid": "T1", "name": "Teststorm", "basin": "NI", "season": 2024,
-                     "n_points": 2,
-                     "track": [
-                         {"iso_time": "2024-05-24 00:00:00", "lat": 18.0, "lon": 88.0},
-                         {"iso_time": "2024-05-24 06:00:00", "lat": 18.5, "lon": 88.4},
-                     ]},
+                    {
+                        "sid": "T1",
+                        "name": "Teststorm",
+                        "basin": "NI",
+                        "season": 2024,
+                        "n_points": 2,
+                        "track": [
+                            {"iso_time": "2024-05-24 00:00:00", "lat": 18.0, "lon": 88.0},
+                            {"iso_time": "2024-05-24 06:00:00", "lat": 18.5, "lon": 88.4},
+                        ],
+                    },
                 ],
             }
         )
