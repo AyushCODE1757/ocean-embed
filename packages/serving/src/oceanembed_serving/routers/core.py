@@ -58,6 +58,4 @@ def get_profile(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    return Profile(
-        date=date, lat=lat, lon=lon, depths_m=list(s.depths_m), provenance=prov, **p
-    )
+    return Profile(date=date, lat=lat, lon=lon, depths_m=list(s.depths_m), provenance=prov, **p)

@@ -1,5 +1,6 @@
 """Read-only access to predictions.zarr. Expected variables (contract: predictions.schema.json):
-   temp_mean[time, depth, lat, lon]; optional temp_spread with the same dims."""
+temp_mean[time, depth, lat, lon]; optional temp_spread with the same dims."""
+
 from functools import lru_cache
 
 import numpy as np
@@ -52,7 +53,9 @@ class Store:
         }
 
     def profile(self, date: str, lat: float, lon: float) -> dict:
-        if not (self.s.lat_min <= lat <= self.s.lat_max and self.s.lon_min <= lon <= self.s.lon_max):
+        if not (
+            self.s.lat_min <= lat <= self.s.lat_max and self.s.lon_min <= lon <= self.s.lon_max
+        ):
             raise ValueError("point outside the contract domain")
         pt = self.ds.isel(time=self._tidx(date)).sel(lat=lat, lon=lon, method="nearest")
         mean = np.round(pt["temp_mean"].values.astype("float64"), 3)
@@ -62,3 +65,24 @@ class Store:
             else np.full_like(mean, np.nan)
         )
         return {"mean": self._clean(mean), "spread": self._clean(spread)}
+
+    def spread_slice(self, date: str, depth_m: int) -> dict:
+        if "temp_spread" not in self.ds:
+            raise LookupError("this run has no uncertainty output")
+        a = self.ds["temp_spread"].isel(time=self._tidx(date), depth=self._didx(depth_m)).values
+        return {
+            "lat": self.ds["lat"].values.tolist(),
+            "lon": self.ds["lon"].values.tolist(),
+            "values": self._clean(np.round(a.astype("float64"), 3)),
+        }
+
+    def column_stack(self, date: str) -> np.ndarray:
+        """temp_mean for one date as [depth, lat, lon] float64."""
+        return self.ds["temp_mean"].isel(time=self._tidx(date)).values.astype("float64")
+
+    def section(self, date: str, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
+        """temp_mean along points, [depth, point], nearest grid cell."""
+        pts = self.ds["temp_mean"].isel(time=self._tidx(date)).sel(
+            lat=xr.DataArray(lats, dims="p"), lon=xr.DataArray(lons, dims="p"), method="nearest"
+        )
+        return pts.transpose("depth", "p").values.astype("float64")
