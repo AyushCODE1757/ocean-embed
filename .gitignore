@@ -55,3 +55,4 @@ Thumbs.db
 package-lock.json.bak
 test-results/
 playwright-report/
+.zcode-shots/
