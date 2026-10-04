@@ -1,0 +1,9 @@
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+COPY contracts ./contracts
+COPY packages/serving ./packages/serving
+RUN uv sync --frozen --package oceanembed-serving --no-dev
+USER nobody
+CMD ["uv", "run", "--package", "oceanembed-serving", "uvicorn", "oceanembed_serving.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oceanembed-contracts"
+version = "1.0.0"
+description = "OceanEmbed M0 Contracts and Schemas"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pydantic",
+    "pyyaml"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]

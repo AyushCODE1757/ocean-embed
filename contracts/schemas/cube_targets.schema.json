@@ -1,1 +1,35 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/cube_targets.schema.json",
+  "title": "OceanEmbed Target Temperature Cube Schema",
+  "type": "object",
+  "required": ["shape", "dims", "depth_levels", "units", "grid"],
+  "properties": {
+    "dims": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "enum": ["time", "depth", "lat", "lon"] }
+    },
+    "shape": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "units": { "type": "string", "const": "degC" },
+    "depth_levels": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 15,
+      "maxItems": 15
+    },
+    "grid": {
+      "type": "object",
+      "required": ["lat_count", "lon_count"],
+      "properties": {
+        "lat_count": { "type": "integer", "const": 101 },
+        "lon_count": { "type": "integer", "const": 241 }
+      }
+    }
+  }
+}

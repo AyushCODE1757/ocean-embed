@@ -1,13 +1,23 @@
 # OceanEmbed Data Splits Specification Contract
 splits:
   status: "frozen"
+  version: "1.0.0"
   train:
-    start_year: 1993
-    end_year: 2018
+    start_date: "2015-04-01"
+    end_date: "2022-12-31"
+    description: "Training split (SMAP SSS begins April 2015)"
   val:
-    start_year: 2019
-    end_year: 2020
+    start_date: "2023-01-01"
+    end_date: "2023-12-31"
+    description: "Validation split for checkpoint selection and hyperparameter tuning"
   test:
-    start_year: 2021
-    end_year: 2023
-  temporal_gap_days: 7
+    start_date: "2024-01-01"
+    end_date: "2025-12-31"
+    description: "Held-out test split for final scoring and baseline comparisons"
+  temporal_gap_days: 15
+  spatial_holdout_box:
+    name: "Central Bay of Bengal Generalization Box"
+    lat_min: 12.0
+    lat_max: 16.0
+    lon_min: 86.0
+    lon_max: 90.0

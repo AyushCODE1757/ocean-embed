@@ -1,1 +1,25 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/argo_profiles.schema.json",
+  "title": "OceanEmbed In-situ Argo Float Profiles Parquet Schema",
+  "type": "object",
+  "required": ["columns"],
+  "properties": {
+    "columns": {
+      "type": "object",
+      "required": ["platform_id", "cycle_number", "timestamp", "latitude", "longitude", "depth", "temperature", "temp_qc", "data_mode"],
+      "properties": {
+        "platform_id": { "type": "string" },
+        "cycle_number": { "type": "integer" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "depth": { "type": "number" },
+        "temperature": { "type": "number" },
+        "salinity": { "type": "number" },
+        "temp_qc": { "type": "integer" },
+        "data_mode": { "type": "string", "enum": ["R", "A", "D"] }
+      }
+    }
+  }
+}

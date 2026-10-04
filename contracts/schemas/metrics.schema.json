@@ -1,1 +1,80 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/metrics.schema.json",
+  "title": "OceanEmbed Comprehensive Evaluation Metrics Schema",
+  "type": "object",
+  "required": ["run_id", "model_name", "test_period", "overall", "per_depth", "per_basin", "per_season", "independence_caveat"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "model_name": { "type": "string" },
+    "test_period": { "type": "string" },
+    "is_sample_slice": { "type": "boolean", "default": false },
+    "overall": {
+      "type": "object",
+      "required": ["rmse", "mae", "bias", "pearson_r", "skill_score_clim"],
+      "properties": {
+        "rmse": { "type": "number" },
+        "mae": { "type": "number" },
+        "bias": { "type": "number" },
+        "pearson_r": { "type": "number" },
+        "acc": { "type": ["number", "null", "string"] },
+        "skill_score_clim": { "type": "number" },
+        "std_ratio": { "type": "number" },
+        "d20_rmse": { "type": ["number", "null"] },
+        "d26_rmse": { "type": ["number", "null"] },
+        "ohc_rmse": { "type": ["number", "null"] }
+      }
+    },
+    "per_depth": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["depth", "rmse", "mae", "bias", "pearson_r", "skill_score_clim"],
+        "properties": {
+          "depth": { "type": "number" },
+          "rmse": { "type": "number" },
+          "mae": { "type": "number" },
+          "bias": { "type": "number" },
+          "pearson_r": { "type": "number" },
+          "acc": { "type": ["number", "null", "string"] },
+          "skill_score_clim": { "type": "number" }
+        }
+      }
+    },
+    "per_basin": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "rmse": { "type": "number" },
+          "mae": { "type": "number" },
+          "bias": { "type": "number" },
+          "pearson_r": { "type": "number" },
+          "acc": { "type": ["number", "null", "string"] },
+          "skill_score_clim": { "type": "number" }
+        }
+      }
+    },
+    "per_season": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "rmse": { "type": "number" },
+          "mae": { "type": "number" },
+          "bias": { "type": "number" },
+          "pearson_r": { "type": "number" },
+          "acc": { "type": ["number", "null", "string"] },
+          "skill_score_clim": { "type": "number" }
+        }
+      }
+    },
+    "baselines": {
+      "type": "object"
+    },
+    "argo_validation": {
+      "type": "object"
+    },
+    "independence_caveat": { "type": "string" }
+  }
+}

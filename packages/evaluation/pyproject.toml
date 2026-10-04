@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oceanembed-evaluation"
+version = "0.1.0"
+description = "OceanEmbed M6 Evaluation, Baselines, and Argo Validation Suite"
+requires-python = ">=3.10"
+dependencies = [
+    "oceanembed-contracts",
+    "oceanembed-harmonize",
+    "numpy",
+    "scipy",
+    "pandas",
+    "xarray",
+    "pyarrow",
+    "pydantic",
+    "pyyaml"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

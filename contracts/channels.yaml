@@ -1,30 +1,64 @@
-# OceanEmbed Surface Input Channels Contract
+# OceanEmbed Surface and Context Input Channels Contract
+# 7 Surface Channels (fixed order) + 4 Static/Context Channels
 channels:
-  - name: sst
-    long_name: Sea Surface Temperature
-    units: "degC"
-    order: 0
-  - name: sss
-    long_name: Sea Surface Salinity
-    units: "psu"
-    order: 1
-  - name: sla
-    long_name: Sea Level Anomaly
-    units: "m"
-    order: 2
-  - name: ucur
-    long_name: Zonal Surface Current
-    units: "m/s"
-    order: 3
-  - name: vcur
-    long_name: Meridional Surface Current
-    units: "m/s"
-    order: 4
-  - name: uwind
-    long_name: Zonal Surface Wind
-    units: "m/s"
-    order: 5
-  - name: vwind
-    long_name: Meridional Surface Wind
-    units: "m/s"
-    order: 6
+  surface:
+    - name: sst
+      long_name: Sea Surface Temperature
+      units: "degC"
+      order: 0
+      min_val: -2.0
+      max_val: 38.0
+    - name: sss
+      long_name: Sea Surface Salinity
+      units: "psu"
+      order: 1
+      min_val: 10.0
+      max_val: 45.0
+    - name: sla
+      long_name: Sea Level Anomaly
+      units: "m"
+      order: 2
+      min_val: -2.5
+      max_val: 2.5
+    - name: ucur
+      long_name: Zonal Surface Current
+      units: "m/s"
+      order: 3
+      min_val: -5.0
+      max_val: 5.0
+    - name: vcur
+      long_name: Meridional Surface Current
+      units: "m/s"
+      order: 4
+      min_val: -5.0
+      max_val: 5.0
+    - name: uwind
+      long_name: Zonal Surface Wind
+      units: "m/s"
+      order: 5
+      min_val: -50.0
+      max_val: 50.0
+    - name: vwind
+      long_name: Meridional Surface Wind
+      units: "m/s"
+      order: 6
+      min_val: -50.0
+      max_val: 50.0
+
+  context:
+    - name: bathymetry
+      long_name: Seafloor Depth / Elevation
+      units: "m"
+      order: 0
+    - name: latitude
+      long_name: Latitude Coordinate Field
+      units: "degN"
+      order: 1
+    - name: sin_doy
+      long_name: Sine of Day of Year (Periodic Context)
+      units: "1"
+      order: 2
+    - name: cos_doy
+      long_name: Cosine of Day of Year (Periodic Context)
+      units: "1"
+      order: 3

@@ -1,1 +1,29 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/model_bundle.schema.json",
+  "title": "OceanEmbed Model Bundle Specification Schema",
+  "type": "object",
+  "required": ["contract_version", "weights_file", "config_file", "norm_stats_file", "model_card_file", "input_shape", "output_shape"],
+  "properties": {
+    "contract_version": { "type": "string" },
+    "weights_file": { "type": "string" },
+    "config_file": { "type": "string" },
+    "norm_stats_file": { "type": "string" },
+    "model_card_file": { "type": "string" },
+    "input_shape": {
+      "type": "object",
+      "properties": {
+        "surface": { "type": "string", "const": "[B, 7, 101, 241]" },
+        "context": { "type": "string", "const": "[B, 4, 101, 241]" }
+      }
+    },
+    "output_shape": {
+      "type": "object",
+      "properties": {
+        "temp_mean": { "type": "string", "const": "[B, 15, 101, 241]" },
+        "temp_logvar": { "type": "string", "const": "[B, 15, 101, 241]" },
+        "embedding": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,22 +1,55 @@
 [project]
-name = "oceanembed-workspace"
-version = "0.1.0"
-description = "OceanEmbed Monorepo Workspace"
-readme = "README.md"
-requires-python = ">=3.11"
-dependencies = []
+name = "oceanembed"
+version = "1.0.0"
+description = "OceanEmbed - daily subsurface ocean temperature reconstructed from satellite observations (SIH26066)"
+requires-python = ">=3.12"
+dependencies = [
+    "oceanembed-contracts",
+    "oceanembed-serving",
+    "oceanembed-ingest",
+    "oceanembed-harmonize",
+    "oceanembed-evaluation",
+]
 
 [tool.uv.workspace]
 members = [
     "contracts/python",
-    "packages/*",
+    "packages/serving",
+    "packages/data_ingest",
+    "packages/harmonize",
+    "packages/evaluation",
 ]
 
 [tool.uv.sources]
 oceanembed-contracts = { workspace = true }
+oceanembed-serving = { workspace = true }
 oceanembed-ingest = { workspace = true }
 oceanembed-harmonize = { workspace = true }
-oceanembed-ml = { workspace = true }
-oceanembed-eval = { workspace = true }
-oceanembed-advisor = { workspace = true }
-oceanembed-serving = { workspace = true }
+oceanembed-evaluation = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1",
+    "ruff>=0.16.9",
+    "httpx>=0.28",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# training/ holds the Kaggle notebooks/scripts that produced the shipped model,
+# kept byte-verbatim as provenance - they are operational code, not library code.
+extend-exclude = ["training"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "contracts/tests",
+    "packages/serving/tests",
+    "packages/evaluation/tests",
+    "packages/harmonize/tests",
+    "packages/data_ingest/tests",
+]

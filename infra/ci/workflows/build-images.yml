@@ -1,1 +1,12 @@
-# Configuration for infra/ci/workflows/build-images.yml
+name: build-images
+on:
+  pull_request:
+    paths: ["infra/docker/**", "packages/serving/**", "apps/web/**", "pyproject.toml", "uv.lock"]
+permissions: { contents: read }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infra/docker/Dockerfile.serving -t oe-serving:ci .
+      - run: docker build -f infra/docker/Dockerfile.web -t oe-web:ci --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000 .

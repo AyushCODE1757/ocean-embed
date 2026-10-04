@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oceanembed.earth/schemas/climatology.schema.json",
+  "title": "OceanEmbed Subsurface Temperature Climatology Schema",
+  "description": "Climatological reference dataset computed strictly from training years (2015-04-01 to 2022-12-31).",
+  "type": "object",
+  "required": ["dims", "variables", "training_period"],
+  "properties": {
+    "dims": {
+      "type": "object",
+      "properties": {
+        "doy": { "type": "integer", "const": 366, "description": "Day of Year index 1..366" },
+        "depth": { "type": "integer", "const": 15, "description": "15 standard SIH depths [0..1000m]" },
+        "lat": { "type": "integer", "const": 101, "description": "Latitude cells [5.0..30.0°N]" },
+        "lon": { "type": "integer", "const": 241, "description": "Longitude cells [45.0..105.0°E]" }
+      }
+    },
+    "variables": {
+      "type": "object",
+      "properties": {
+        "temp_clim_mean": {
+          "type": "string",
+          "description": "Day-of-year mean temperature array [366, 15, 101, 241] in °C computed over 2015-2022 training years."
+        },
+        "temp_clim_std": {
+          "type": "string",
+          "description": "Day-of-year standard deviation array [366, 15, 101, 241] in °C computed over 2015-2022 training years."
+        },
+        "global_train_mean": {
+          "type": "string",
+          "description": "Overall static time-mean temperature [15, 101, 241] in °C across the entire training period."
+        },
+        "global_train_std": {
+          "type": "string",
+          "description": "Overall static standard deviation [15, 101, 241] in °C across the entire training period."
+        }
+      }
+    },
+    "training_period": {
+      "type": "string",
+      "const": "2015-04-01 to 2022-12-31"
+    }
+  }
+}

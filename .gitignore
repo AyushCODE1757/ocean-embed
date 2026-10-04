@@ -1,7 +1,58 @@
+# --- data & model artifacts (never commit; truth policy: no data in git) ---
 data/
-runs/
 artifacts/
-node_modules/
+runs/
+*.npy
+*.npz
+*.zarr
+*.nc
+*.parquet
+*.pt
+*.ckpt
+*.pkl
+
+# --- teammate drop folders (archived during consolidation, removed at the end) ---
+ocean-embed-1/
+ocean-embed-BranchA/
+_archive/
+
+# --- python ---
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# --- node / next.js ---
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# --- env & secrets ---
 .env
+.env.*
+!.env.example
+
+# --- editors / OS ---
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- misc ---
+package-lock.json.bak
+test-results/
+playwright-report/
+.zcode-shots/
